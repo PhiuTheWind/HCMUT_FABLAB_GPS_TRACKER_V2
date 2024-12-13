@@ -1,197 +1,37 @@
-//Thư viện
 #include "main.h"
 
-
-/// Khai biến để xử lý MPU6050
-static const char *TAG = "MPU6050_APP";
-Adafruit_MPU6050 mpu;
-
-// Khai báo biến để xử lý đọc dữ liệu từ MPU6050
-float alpha = 0.98;  // Hệ số của bộ lọc Complementary
-float roll = 0, pitch = 0; // Góc Roll và Pitch
-
-
-//Khai biến biến thời gian
-unsigned long previous_time = 0;
-unsigned long last_read_time = 0;
-const unsigned long read_interval = 10; // 10 ms
-
-
-//Khai biến xử lí sleep
+// Sleep control variables
 RTC_DATA_ATTR int wake_count = 0;
-//Tọa độ ban đầu của Roll và Pitch
 RTC_DATA_ATTR float initial_roll = 0, initial_pitch = 0;
-
-
-
-// Cờ chống ngủ
 int flag_for_wake = 0;
 bool steel_mode = false;
+RTC_DATA_ATTR float gyro_bias_x = 0.0, gyro_bias_y = 0.0;
+RTC_DATA_ATTR bool calibration_done = false;
+bool read_task_delete = false;
+
+// Logging tag
+static const char *TAG = "MPU6050_APP";
+
+// MPU6050 object
+Adafruit_MPU6050 mpu;
+
+// Complementary filter constant
+const float alpha = 0.98f;
+
+// Roll and Pitch angles
+float roll = 0.0f, pitch = 0.0f;
 
 // Calibration parameters
-const int calibration_duration_ms = 2000; // 2 seconds
-const unsigned long read_interval_ms = 10; // 10 ms
-const float tilt_threshold = 20.0; // degrees
-// Gyroscope bias variables (preserved across deep sleep cycles)
-RTC_DATA_ATTR float gyro_bias_x = 0.0, gyro_bias_y = 0.0;
-// Calibration flag (preserved across deep sleep cycles)
-RTC_DATA_ATTR bool calibration_done = false;
+const int calibration_duration_ms = 2000;     // 2 seconds
+const unsigned long read_interval_ms = 10;    // 10 ms
+const float tilt_threshold = 20.0f;           // degrees
 
+TaskHandle_t readTaskHandle; // Global variable to track the task
+TaskHandle_t appMainTaskHandle = NULL; // Global variable to store app_main handle
 
-// Hàm setup MPU6050
-void setup_mpu6050() {
-    if (!mpu.begin()) {
-        ESP_LOGE(TAG, "Failed to initialize MPU6050");
-        while (1) {
-            vTaskDelay(pdMS_TO_TICKS(100));
-        }
-    }
-    ESP_LOGI(TAG, "MPU6050 initialized successfully");
+#define TIME_TO_WAKE 15 // Thời gian chạy task trong trường hợp wake_count > 1 (15 giây)
 
-    // Setup motion detection
-  // Configure MPU6050 settings
-    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
-    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
-    mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
-
-    // Setup for interrupt
-    mpu.setMotionDetectionThreshold(5);
-    mpu.setMotionDetectionDuration(1);
-
-    // Latch ngắt không duy trì (một xung ngắt sẽ reset sau đó)
-    mpu.setInterruptPinLatch(false);
-
-
-    // Cực tính ban đầu thấp, tín hiệu ngắt sẽ chuyển lên cao khi có ngắt
-    mpu.setInterruptPinPolarity(false);
-
-    // Kích hoạt ngắt chuyển động
-    mpu.setMotionInterrupt(true);
-    previous_time = esp_timer_get_time();
-}
-
-// Hàm set GPIO level
-void set_gpio_level(gpio_num_t gpio, int level) {
-    rtc_gpio_hold_dis(gpio);
-    rtc_gpio_set_level(gpio, level);
-    rtc_gpio_hold_en(gpio);
-}
-
-void calculate_orientation(float ax, float ay, float az, float gx, float gy, float dt,
-                           float gyro_bias_x, float gyro_bias_y, float alpha,
-                           float &roll, float &pitch) {
-    // Convert gyroscope readings from rad/s to deg/s and apply bias correction
-    float gx_deg = (gx - gyro_bias_x) * 180.0 / M_PI; // deg/s
-    float gy_deg = (gy - gyro_bias_y) * 180.0 / M_PI; // deg/s
-
-    // Calculate angles from accelerometer data
-    float roll_acc = atan2(ay, az) * 180.0 / M_PI;
-    float pitch_acc = atan2(-ax, sqrt(ay * ay + az * az)) * 180.0 / M_PI;
-
-    // Apply complementary filter to combine accelerometer and gyroscope data
-    roll = alpha * (roll + gx_deg * dt) + (1.0 - alpha) * roll_acc;
-    pitch = alpha * (pitch + gy_deg * dt) + (1.0 - alpha) * pitch_acc;
-}
-
-
-// Hàm đọc dữ liệu từ MPU6050 và xử lý
-void read_mpu6050_task(void *pvParameter) {
-    // Initialize timing variables
-    unsigned long previous_micros = esp_timer_get_time();
-    unsigned long last_read_time_task = millis();
-
-    // Perform gyroscope calibration if not yet calibrated
-    if (!calibration_done) {
-        ESP_LOGI(TAG, "Starting gyroscope calibration...");
-        const int calibration_samples_count = calibration_duration_ms / read_interval_ms;
-        for (int i = 0; i < calibration_samples_count; i++) {
-            sensors_event_t a, g, temp;
-            mpu.getEvent(&a, &g, &temp);
-            gyro_bias_x += g.gyro.x;
-            gyro_bias_y += g.gyro.y;
-            vTaskDelay(pdMS_TO_TICKS(read_interval_ms));
-        }
-
-        // Calculate average bias
-        gyro_bias_x /= calibration_samples_count;
-        gyro_bias_y /= calibration_samples_count;
-
-        ESP_LOGI(TAG, "Calibration done!");
-        ESP_LOGI(TAG, "Gyro Bias X: %.6f rad/s", gyro_bias_x);
-        ESP_LOGI(TAG, "Gyro Bias Y: %.6f rad/s", gyro_bias_y);
-
-        // Set calibration_done flag
-        calibration_done = true;
-    } else {
-        ESP_LOGI(TAG, "Using existing gyroscope calibration");
-    }
-
-    // Initialize previous_time for dt calculation
-    previous_micros = esp_timer_get_time();
-
-    while (1) {
-        unsigned long current_time_millis = millis();
-        unsigned long current_time_micros = esp_timer_get_time();
-        float dt = (current_time_micros - previous_micros) / 1000000.0; // Delta time in seconds
-        previous_micros = current_time_micros;
-
-        // Check if it's time to read the sensor
-        if ((current_time_millis - last_read_time_task) >= read_interval_ms) {
-            last_read_time_task = current_time_millis;
-
-            sensors_event_t a, g, temp;
-            mpu.getEvent(&a, &g, &temp);
-
-            // Accelerometer data
-            float ax = a.acceleration.x;
-            float ay = a.acceleration.y;
-            float az = a.acceleration.z;
-
-            // Gyroscope data (rad/s), bias already applied
-            float gx = g.gyro.x;
-            float gy = g.gyro.y;
-
-            // Calculate orientation using the complementary filter
-            calculate_orientation(ax, ay, az, gx, gy, dt, gyro_bias_x, gyro_bias_y, alpha, roll, pitch);
-
-            // Initialize reference orientation
-            if (wake_count == 1) {
-                initial_roll = roll;
-                initial_pitch = pitch;
-                ESP_LOGI(TAG, "Initial orientation set.");
-                ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f", initial_roll, initial_pitch);
-            }
-
-            // Check for significant tilt (e.g., >20 degrees from initial orientation)
-            if ((abs(roll - initial_roll) >= tilt_threshold || abs(pitch - initial_pitch) >= tilt_threshold)) {
-                ESP_LOGI(TAG, "Device is tilted beyond threshold!");
-                ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
-                flag_for_wake++;  // Set flag to wake up
-            }
-
-            // Optional: Print all data for debugging
-            /*
-            Serial.print("Roll: "); Serial.print(roll);
-            Serial.print(" | Pitch: "); Serial.print(pitch);
-            Serial.print(" | Roll_acc: "); Serial.print(roll_acc);
-            Serial.print(" | Pitch_acc: "); Serial.print(pitch_acc);
-            Serial.print(" | gx: "); Serial.print(gx_deg);
-            Serial.print(" | gy: "); Serial.println(gy_deg);
-            */
-
-            // No need for additional delay here; timing is managed by millis()
-        }
-        if (steel_mode == true) {
-            printf("Kết thúc task read_mpu6050_task.\n");
-            printf("Steel mode is enabled...\n");
-            vTaskDelete(NULL);
-        }
-        // Yield to allow other tasks to run
-        vTaskDelay(pdMS_TO_TICKS(100));
-    }
-}
-
-//Hàm in lý do thức dậy
+// Function to print wake-up reason
 void print_wakeup_reason() {
     esp_sleep_wakeup_cause_t wakeup_reason = esp_sleep_get_wakeup_cause();
     switch (wakeup_reason) {
@@ -204,11 +44,205 @@ void print_wakeup_reason() {
     }
 }
 
-// Hàm chính
+// Function to print reset reason
+void print_reset_reason() {
+    esp_reset_reason_t reset_reason = esp_reset_reason();
+    printf("Reset reason: %d\n", reset_reason);
+}
+
+// Function to setup MPU6050
+void setup_mpu6050() {
+    if (!mpu.begin()) {
+        ESP_LOGE(TAG, "Failed to initialize MPU6050");
+        int retry_count = 0;
+        while (!mpu.begin() && retry_count < 5) {
+            ESP_LOGE(TAG, "Failed to initialize MPU6050, retrying in 10 seconds...");
+            retry_count++;
+            vTaskDelay(pdMS_TO_TICKS(10000));
+        }
+        if (retry_count == 5) {
+            ESP_LOGE(TAG, "MPU6050 failed after 5 retries. Halting.");
+            while (1);
+        }
+    }
+    ESP_LOGI(TAG, "MPU6050 initialized successfully");
+
+    // Configure MPU6050
+    mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
+    mpu.setGyroRange(MPU6050_RANGE_500_DEG);
+    mpu.setFilterBandwidth(MPU6050_BAND_21_HZ);
+
+    // Configure motion detection interrupt
+    mpu.setMotionDetectionThreshold(10);
+    mpu.setMotionDetectionDuration(1);
+    mpu.setInterruptPinLatch(false);
+    mpu.setInterruptPinPolarity(true);
+    
+    mpu.setMotionInterrupt(true);
+
+    ESP_LOGI(TAG, "MPU6050 configuration done.");
+}
+
+// Function to set GPIO level
+void set_gpio_level(gpio_num_t gpio, int level) {
+    rtc_gpio_hold_dis(gpio);
+    rtc_gpio_set_level(gpio, level);
+    rtc_gpio_hold_en(gpio);
+}
+
+// Function to calculate orientation using Complementary filter
+void calculate_orientation(float ax, float ay, float az, float gx, float gy, float dt,
+                           float gyro_bias_x, float gyro_bias_y, float alpha,
+                           float &roll, float &pitch) {
+    // Convert gyroscope data from rad/s to deg/s and correct bias
+    float gx_deg = (gx - gyro_bias_x) * 180.0f / M_PI; // deg/s
+    float gy_deg = (gy - gyro_bias_y) * 180.0f / M_PI; // deg/s
+
+    // Calculate angles from accelerometer data
+    float roll_acc = atan2f(ay, az) * 180.0f / M_PI;
+    float pitch_acc = atan2f(-ax, sqrtf(ay * ay + az * az)) * 180.0f / M_PI;
+
+    // Apply Complementary filter to combine accelerometer and gyroscope data
+    roll = alpha * (roll + gx_deg * dt) + (1.0f - alpha) * roll_acc;
+    pitch = alpha * (pitch + gy_deg * dt) + (1.0f - alpha) * pitch_acc;
+}
+
+// MPU6050 read and processing task
+// MPU6050 read and processing task
+void read_mpu6050_task(void *pvParameter) {
+    // Nhận handle của app_main
+    TaskHandle_t appMainHandle = (TaskHandle_t) pvParameter;
+    ESP_LOGI(TAG, "read_mpu6050_task started.");
+
+    // Khởi tạo thời gian để đếm 15 giây
+    TickType_t startTick = xTaskGetTickCount();
+    const TickType_t runDuration = pdMS_TO_TICKS(15000); // 15 giây
+
+    // Perform gyroscope calibration if not done
+    if (!calibration_done) {
+        ESP_LOGI(TAG, "Starting gyroscope calibration...");
+        const int calibration_samples_count = calibration_duration_ms / read_interval_ms;
+        for (int i = 0; i < calibration_samples_count; i++) {
+            sensors_event_t a, g, temp;
+            if (mpu.getEvent(&a, &g, &temp)) {
+                gyro_bias_x += g.gyro.x;
+                gyro_bias_y += g.gyro.y;
+            } else {
+                ESP_LOGE(TAG, "Failed to read MPU6050 during calibration.");
+            }
+            vTaskDelay(pdMS_TO_TICKS(read_interval_ms));
+        }
+
+        // Calculate average bias
+        gyro_bias_x /= calibration_samples_count;
+        gyro_bias_y /= calibration_samples_count;
+
+        ESP_LOGI(TAG, "Calibration done!");
+        ESP_LOGI(TAG, "Gyro Bias X: %.6f rad/s", gyro_bias_x);
+        ESP_LOGI(TAG, "Gyro Bias Y: %.6f rad/s", gyro_bias_y);
+
+        // Set calibration done flag
+        calibration_done = true;
+    } else {
+        ESP_LOGI(TAG, "Using existing gyroscope calibration.");
+    }
+
+    // Khởi tạo thời gian cho tính dt
+    unsigned long previous_micros = esp_timer_get_time();
+
+    while (1) {
+        // Kiểm tra xem đã chạy đủ 15 giây chưa
+        if ((xTaskGetTickCount() - startTick) >= runDuration) {
+            ESP_LOGI(TAG, "15 seconds elapsed. Terminating task.");
+
+            // Gửi thông báo tới app_main
+            if (appMainHandle != NULL) {
+                xTaskNotifyGive(appMainHandle);
+                ESP_LOGI(TAG, "Notification sent to app_main.");
+            } else {
+                ESP_LOGE(TAG, "appMainHandle is NULL. Cannot notify.");
+            }
+
+            // Đặt cờ trạng thái
+            read_task_delete = true;
+            // Không reset flag_for_wake ở đây nếu muốn giữ giá trị
+
+            ESP_LOGI(TAG, "read_task_delete set to true.");
+
+            // Xóa task hiện tại
+            vTaskDelete(NULL); // NULL nghĩa là xóa chính task hiện tại
+        }
+
+        // Đọc sensor data
+        sensors_event_t a, g, temp;
+        if (!mpu.getEvent(&a, &g, &temp)) {
+            ESP_LOGE(TAG, "Failed to read MPU6050 sensor.");
+            continue; // Bỏ qua lần đọc này và tiếp tục
+        }
+
+        // Accelerometer data
+        float ax = a.acceleration.x;
+        float ay = a.acceleration.y;
+        float az = a.acceleration.z;
+
+        // Gyroscope data (rad/s), đã hiệu chỉnh
+        float gx = g.gyro.x;
+        float gy = g.gyro.y;
+
+        // Tính toán góc sử dụng bộ lọc Complementary
+        calculate_orientation(ax, ay, az, gx, gy, 0.01f, gyro_bias_x, gyro_bias_y, alpha, roll, pitch);
+
+        // Điều chỉnh góc nằm trong khoảng [-180, 180] độ
+        roll = fmodf(roll, 360.0f);
+        if (roll > 180.0f) roll -= 360.0f;
+        if (roll < -180.0f) roll += 360.0f;
+
+        pitch = fmodf(pitch, 360.0f);
+        if (pitch > 180.0f) pitch -= 360.0f;
+        if (pitch < -180.0f) pitch += 360.0f;
+
+        // Đặt tọa độ ban đầu khi bắt đầu chạy
+        if (initial_roll == 0.0f && initial_pitch == 0.0f) {
+            initial_roll = roll;
+            initial_pitch = pitch;
+            ESP_LOGI(TAG, "Initial orientation set.");
+            ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f", initial_roll, initial_pitch);
+            continue; // Bỏ qua kiểm tra nghiêng cho lần đầu tiên
+        }
+
+        if (wake_count > 1) {
+            // Kiểm tra nghiêng quá ngưỡng (ví dụ: >20 độ từ vị trí ban đầu)
+            if ((fabsf(roll - initial_roll) >= tilt_threshold || fabsf(pitch - initial_pitch) >= tilt_threshold)) {
+                ESP_LOGI(TAG, "Device is tilted beyond threshold!");
+                ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
+                // Thực hiện hành động khi nghiêng quá ngưỡng nếu cần
+                flag_for_wake++;  // Tăng flag để đánh dấu
+            }
+        }
+
+        // In dữ liệu cho mục đích gỡ lỗi
+        ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
+
+        // Delay trước khi đọc lần tiếp theo
+        vTaskDelay(pdMS_TO_TICKS(read_interval_ms));
+    }
+}
+
+// Main application function
+// Main application function
 extern "C" void app_main() {
+   
+
+    //In lý do thức dậy để debug
+    //print_wakeup_reason();
+
+    // In lý do reset để debug
+    //print_reset_reason();
+
     ESP_LOGI(TAG, "Starting MPU6050 Application");
 
-    Wire.begin();
+    // Initialize Serial
+    Wire.begin(21, 22, 100000); // SDA, SCL, tốc độ 100kHz
     setup_mpu6050();
 
     // Initialize GPIOs
@@ -219,54 +253,97 @@ extern "C" void app_main() {
     rtc_gpio_init(GPIO_PEN);
     rtc_gpio_set_direction(GPIO_PEN, RTC_GPIO_MODE_OUTPUT_ONLY);
 
-    wake_count++;
-    printf("Wake count: %d\n", wake_count);
-    printf("Initial pitch: %f\n", initial_pitch);
-    printf("Initial roll: %f\n", initial_roll);
-
-    if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT0) {
-        set_gpio_level(GPIO_GPS_TRIGGER, 0);
-        set_gpio_level(GPIO_SIM_TRIGGER, 1);
-        set_gpio_level(GPIO_PEN, 1);
-
-        xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 4096, NULL, 5, NULL);
-        vTaskDelay(pdMS_TO_TICKS(TIME_TO_WAKE * 1000));
-    }
-
+    //Cài đặt GPIOs cho chế độ mặc định
     set_gpio_level(GPIO_GPS_TRIGGER, 1);
     set_gpio_level(GPIO_SIM_TRIGGER, 0);
     set_gpio_level(GPIO_PEN, 0);
 
+    wake_count++;
+    ESP_LOGI(TAG, "Wake count: %d", wake_count);
+    ESP_LOGI(TAG, "Initial pitch: %f", initial_pitch);
+    ESP_LOGI(TAG, "Initial roll: %f", initial_roll);
+
+     // Lưu handle của app_main
+    appMainTaskHandle = xTaskGetCurrentTaskHandle();
+    ESP_LOGI(TAG, "app_main started. Handle: %p", (void*)appMainTaskHandle);
+
+    // Kiểm tra lý do thức dậy từ deep sleep
+    if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT0) {
+        ESP_LOGI(TAG, "Woke up from EXT0 interrupt.");
+
+        if (wake_count > 1) {
+            ESP_LOGI(TAG, "wake_count > 1. Handling accordingly.");
+
+            // Tạo task để xử lý đọc dữ liệu MPU6050
+            if (xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 8192, (void*)appMainTaskHandle, 5, &readTaskHandle) == pdPASS) {
+                ESP_LOGI(TAG, "read_mpu6050_task created successfully. Waiting for 15 seconds...");
+
+                // Chờ 15 giây để task chạy và cập nhật flag_for_wake
+                vTaskDelay(pdMS_TO_TICKS(15000)); // 15 giây
+
+                ESP_LOGI(TAG, "15 seconds elapsed. Checking flag_for_wake: %d", flag_for_wake);
+
+                if (flag_for_wake <= 50) {
+                    ESP_LOGI(TAG, "flag_for_wake <= 50. Entering deep sleep.");
+                    // Cấu hình điều kiện đánh thức trước khi ngủ
+                    esp_sleep_enable_ext0_wakeup(INT_PIN, 0);
+                    Serial.flush();
+                    esp_deep_sleep_start();
+                } else {
+                    ESP_LOGI(TAG, "flag_for_wake > 50. Continuing app_main.");
+                    // Có thể thêm các hành động khác nếu cần
+                }
+
+                // Không xóa task từ app_main, vì task đã tự xóa mình
+            } else {
+                ESP_LOGE(TAG, "Failed to create read_mpu6050_task.");
+            }
+        }
+    }
+
+    // Xử lý khi wake_count == 1
     if (wake_count == 1) {
+        ESP_LOGI(TAG, "wake_count == 1. Creating read_mpu6050_task without sleep timer.");
+
         // Tạo task đọc dữ liệu từ MPU6050
-        xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 4096, NULL, 5, NULL);
+        if (xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 8192, (void*)appMainTaskHandle, 5, NULL) == pdPASS) {
+            ESP_LOGI(TAG, "read_mpu6050_task created successfully.");
+        } else {
+            ESP_LOGE(TAG, "Failed to create read_mpu6050_task.");
+        }
 
-        // Đợi một khoảng thời gian để task có thể chạy
-        ESP_LOGI(TAG, "Waiting for 10 seconds before deep sleep...");
-        vTaskDelay(pdMS_TO_TICKS(10000)); // Đợi 10 giây
+        // Đợi 20 giây trước khi ngủ sâu lần đầu tiên
+        ESP_LOGI(TAG, "Waiting for 20 seconds before deep sleep...");
+        vTaskDelay(pdMS_TO_TICKS(20000)); // 20 giây
+        ESP_LOGI(TAG, "After 20 seconds delay.");
 
-        // Cấu hình điều kiện đánh thức
-        esp_sleep_enable_ext0_wakeup(INT_PIN, 1);
-        ESP_LOGI(TAG, "Entering deep sleep for the first time");
-        Serial.flush();
-        // Thực hiện ngủ sâu
-        esp_deep_sleep_start();
-    }
+        // Cấu hình điều kiện đánh thức trước khi ngủ
+        esp_sleep_enable_ext0_wakeup(INT_PIN, 0);
+        ESP_LOGI(TAG, "Wake-up condition configured.");
 
-    // Cấu hình điều kiện đánh thức
-    esp_sleep_enable_ext0_wakeup(INT_PIN, 1);
-
-
-
-    if (flag_for_wake <= 10) 
-    {
-        printf("Sleep starts... \n");
+        ESP_LOGI(TAG, "Entering deep sleep for the first time.");
         Serial.flush();
         esp_deep_sleep_start();
     }
-    
-    else
-    {
-        steel_mode = true;
+
+    // Kiểm tra wake_count >1 đã được xử lý ở trên
+    // Kiểm tra giá trị flag_for_wake để quyết định hành động
+    if (wake_count > 1) {
+        if (flag_for_wake > 50) {
+            ESP_LOGI(TAG, "flag_for_wake > 50. Setting GPIOs for Steel mode.");
+            set_gpio_level(GPIO_GPS_TRIGGER, 0);
+            set_gpio_level(GPIO_SIM_TRIGGER, 1);
+            set_gpio_level(GPIO_PEN, 1);
+            ESP_LOGI(TAG, "Steel mode is on...");
+            printf("Steel mode is on...\n");
+        }
+    }
+
+    ESP_LOGI(TAG, "app_main completed.");
+
+    // Đảm bảo rằng app_main không kết thúc bằng cách sử dụng vòng lặp vô hạn
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
+

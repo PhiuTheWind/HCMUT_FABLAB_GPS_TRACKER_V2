@@ -2,7 +2,7 @@
 
 // Sleep control variables
 RTC_DATA_ATTR int wake_count = 0;
-RTC_DATA_ATTR float initial_roll = 0, initial_pitch = 0;
+RTC_DATA_ATTR float initial_roll = 0.0f, initial_pitch = 0.0f;
 int flag_for_wake = 0;
 bool steel_mode = false;
 RTC_DATA_ATTR float gyro_bias_x = 0.0, gyro_bias_y = 0.0;
@@ -28,8 +28,6 @@ const float tilt_threshold = 20.0f;           // degrees
 
 TaskHandle_t readTaskHandle; // Global variable to track the task
 TaskHandle_t appMainTaskHandle = NULL; // Global variable to store app_main handle
-
-#define TIME_TO_WAKE 15 // Thời gian chạy task trong trường hợp wake_count > 1 (15 giây)
 
 // Function to print wake-up reason
 void print_wakeup_reason() {
@@ -94,6 +92,8 @@ void set_gpio_level(gpio_num_t gpio, int level) {
 void calculate_orientation(float ax, float ay, float az, float gx, float gy, float dt,
                            float gyro_bias_x, float gyro_bias_y, float alpha,
                            float &roll, float &pitch) {
+
+
     // Convert gyroscope data from rad/s to deg/s and correct bias
     float gx_deg = (gx - gyro_bias_x) * 180.0f / M_PI; // deg/s
     float gy_deg = (gy - gyro_bias_y) * 180.0f / M_PI; // deg/s
@@ -108,15 +108,15 @@ void calculate_orientation(float ax, float ay, float az, float gx, float gy, flo
 }
 
 // MPU6050 read and processing task
-// MPU6050 read and processing task
 void read_mpu6050_task(void *pvParameter) {
     // Nhận handle của app_main
     TaskHandle_t appMainHandle = (TaskHandle_t) pvParameter;
     ESP_LOGI(TAG, "read_mpu6050_task started.");
 
-    // Khởi tạo thời gian để đếm 15 giây
+    // Khởi tạo thời gian để đếm 20 giây
     TickType_t startTick = xTaskGetTickCount();
-    const TickType_t runDuration = pdMS_TO_TICKS(15000); // 15 giây
+    const TickType_t runDuration = pdMS_TO_TICKS(20000); // 20 giây
+    const TickType_t idleDuration = pdMS_TO_TICKS(5000); // 5 giây đầu không làm gì
 
     // Perform gyroscope calibration if not done
     if (!calibration_done) {
@@ -151,9 +151,11 @@ void read_mpu6050_task(void *pvParameter) {
     unsigned long previous_micros = esp_timer_get_time();
 
     while (1) {
-        // Kiểm tra xem đã chạy đủ 15 giây chưa
+
+
+        // Kiểm tra xem đã chạy đủ 20 giây chưa
         if ((xTaskGetTickCount() - startTick) >= runDuration) {
-            ESP_LOGI(TAG, "15 seconds elapsed. Terminating task.");
+            ESP_LOGI(TAG, "20 seconds elapsed. Terminating task.");
 
             // Gửi thông báo tới app_main
             if (appMainHandle != NULL) {
@@ -165,8 +167,6 @@ void read_mpu6050_task(void *pvParameter) {
 
             // Đặt cờ trạng thái
             read_task_delete = true;
-            // Không reset flag_for_wake ở đây nếu muốn giữ giá trị
-
             ESP_LOGI(TAG, "read_task_delete set to true.");
 
             // Xóa task hiện tại
@@ -201,16 +201,22 @@ void read_mpu6050_task(void *pvParameter) {
         if (pitch > 180.0f) pitch -= 360.0f;
         if (pitch < -180.0f) pitch += 360.0f;
 
+        // In dữ liệu cho mục đích gỡ lỗi
+        ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
+
         // Đặt tọa độ ban đầu khi bắt đầu chạy
-        if (initial_roll == 0.0f && initial_pitch == 0.0f) {
+        if (wake_count <= 1) {
             initial_roll = roll;
             initial_pitch = pitch;
-            ESP_LOGI(TAG, "Initial orientation set.");
-            ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f", initial_roll, initial_pitch);
             continue; // Bỏ qua kiểm tra nghiêng cho lần đầu tiên
         }
 
         if (wake_count > 1) {
+            // Kiểm tra nếu trong 5 giây đầu thì bỏ qua xử lý
+            if ((xTaskGetTickCount() - startTick) <= idleDuration) {
+                continue; // Bỏ qua xử lý
+            }
+
             // Kiểm tra nghiêng quá ngưỡng (ví dụ: >20 độ từ vị trí ban đầu)
             if ((fabsf(roll - initial_roll) >= tilt_threshold || fabsf(pitch - initial_pitch) >= tilt_threshold)) {
                 ESP_LOGI(TAG, "Device is tilted beyond threshold!");
@@ -220,19 +226,15 @@ void read_mpu6050_task(void *pvParameter) {
             }
         }
 
-        // In dữ liệu cho mục đích gỡ lỗi
-        ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
-
         // Delay trước khi đọc lần tiếp theo
         vTaskDelay(pdMS_TO_TICKS(read_interval_ms));
     }
 }
 
-// Main application function
+
+
 // Main application function
 extern "C" void app_main() {
-   
-
     //In lý do thức dậy để debug
     //print_wakeup_reason();
 
@@ -276,12 +278,12 @@ extern "C" void app_main() {
 
             // Tạo task để xử lý đọc dữ liệu MPU6050
             if (xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 8192, (void*)appMainTaskHandle, 5, &readTaskHandle) == pdPASS) {
-                ESP_LOGI(TAG, "read_mpu6050_task created successfully. Waiting for 15 seconds...");
+                ESP_LOGI(TAG, "read_mpu6050_task created successfully. Waiting for 20 seconds...");
 
-                // Chờ 15 giây để task chạy và cập nhật flag_for_wake
-                vTaskDelay(pdMS_TO_TICKS(15000)); // 15 giây
+                // Chờ 20 giây để task chạy và cập nhật flag_for_wake
+                vTaskDelay(pdMS_TO_TICKS(20000)); // 20 giây
 
-                ESP_LOGI(TAG, "15 seconds elapsed. Checking flag_for_wake: %d", flag_for_wake);
+                ESP_LOGI(TAG, "20 seconds elapsed. Checking flag_for_wake: %d", flag_for_wake);
 
                 if (flag_for_wake <= 50) {
                     ESP_LOGI(TAG, "flag_for_wake <= 50. Entering deep sleep.");
@@ -296,7 +298,9 @@ extern "C" void app_main() {
 
                 // Không xóa task từ app_main, vì task đã tự xóa mình
             } else {
+                if (wake_count == 1) {
                 ESP_LOGE(TAG, "Failed to create read_mpu6050_task.");
+                }
             }
         }
     }
@@ -316,7 +320,8 @@ extern "C" void app_main() {
         ESP_LOGI(TAG, "Waiting for 20 seconds before deep sleep...");
         vTaskDelay(pdMS_TO_TICKS(20000)); // 20 giây
         ESP_LOGI(TAG, "After 20 seconds delay.");
-
+        ESP_LOGI(TAG, "Initial orientation set.");
+        ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f", initial_roll, initial_pitch);
         // Cấu hình điều kiện đánh thức trước khi ngủ
         esp_sleep_enable_ext0_wakeup(INT_PIN, 0);
         ESP_LOGI(TAG, "Wake-up condition configured.");

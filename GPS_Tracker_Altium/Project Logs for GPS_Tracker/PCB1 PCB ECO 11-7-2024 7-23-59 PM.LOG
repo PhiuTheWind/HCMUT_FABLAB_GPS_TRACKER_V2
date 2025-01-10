@@ -1,0 +1,4 @@
+Change Component Description : Designator=J1 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Added Pin To Net: NetName=VCC Pin=U2-3
+Added Member To Class: ClassName=Sheet1 Member=Component U1 ESP32-DEVKIT-V1
+Added Room: Name=Sheet1

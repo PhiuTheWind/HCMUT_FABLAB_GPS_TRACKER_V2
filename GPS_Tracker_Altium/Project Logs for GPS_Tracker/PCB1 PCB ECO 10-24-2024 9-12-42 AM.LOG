@@ -1,0 +1,3 @@
+Removed Pin From Net: NetName=VCC Pin=U?-8
+Change Component Description : Designator=J2 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Added Pin To Net: NetName=3V3 Pin=U?-8

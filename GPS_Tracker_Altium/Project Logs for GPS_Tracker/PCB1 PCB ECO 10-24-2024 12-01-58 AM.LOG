@@ -1,0 +1,28 @@
+Removed Pin From Net: NetName=NetR13_2 Pin=U2-
+Removed Pin From Net: NetName=NetR13_2 Pin=U2-
+Removed Pin From Net: NetName=NetR13_2 Pin=U2-
+Removed Pin From Net: NetName=NetR13_2 Pin=U2-
+Removed Pin From Net: NetName=GND Pin=U3-1
+Removed Pin From Net: NetName=GND Pin=U3-1
+Removed Pin From Net: NetName=NetH3_3 Pin=U3-2
+Removed Pin From Net: NetName=NetH3_3 Pin=U3-2
+Removed Pin From Net: NetName=NetH3_4 Pin=U3-3
+Removed Pin From Net: NetName=NetH3_4 Pin=U3-3
+Removed Pin From Net: NetName=NetH3_5 Pin=U3-4
+Removed Pin From Net: NetName=NetH3_5 Pin=U3-4
+Removed Pin From Net: NetName=VCC Pin=U3-5
+Removed Pin From Net: NetName=VCC Pin=U3-5
+Added Component: Designator=H?(JP 1X3)
+Add component (AddParameter): Name = "Chung_Loai"; Value = "C?m"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Don_Vi"; Value = "Con"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ghi_Chu"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Kieu_Chan"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ma_Hang"; Value = "MH001302"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Ten_Linh_Kien"; Value = "Header 3P XH2.54-3P Ð?c Cong"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetH3_7 Pin=U3-2
+Added Pin To Net: NetName=NetH3_7 Pin=U3-2
+Added Pin To Net: NetName=VCC Pin=U4-1
+Added Pin To Net: NetName=GND Pin=U4-2
+Added Pin To Net: NetName=NetR13_1 Pin=U4-3
+Added Member To Class: ClassName=Sheet1 Member=Component H? Header 3P
+Added Member To Class: ClassName=Sheet1 Member=Component U4 Tilt Sensor

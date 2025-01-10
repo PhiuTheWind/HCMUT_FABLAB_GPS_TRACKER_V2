@@ -1,0 +1,16 @@
+Added Component: Designator=U?(MODULE_ESP32_DEVKIT_V1)
+Add component (AddParameter): Name = "Availability"; Value = "Not in stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/ESP32-DEVKIT-V1/Do+it/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Do it"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "ESP32-DEVKIT-V1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/ESP32-DEVKIT-V1/Do+it/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Pin To Net: NetName=3V3 Pin=U?-1
+Added Pin To Net: NetName=NetJ1_4 Pin=U?-6
+Added Pin To Net: NetName=NetJ1_3 Pin=U?-7
+Added Pin To Net: NetName=NetU1_J4_5 Pin=U?-12
+Added Pin To Net: NetName=NetU1_J4_4 Pin=U?-13
+Added Member To Class: ClassName=Sheet1 Member=Component U? ESP32-DEVKIT-V1
+Added Room: Name=Sheet1

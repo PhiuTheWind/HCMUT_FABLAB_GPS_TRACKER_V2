@@ -1,0 +1,11 @@
+Removed Pin From Net: NetName=NetH3_7 Pin=U3-2
+Removed Pin From Net: NetName=NetH3_7 Pin=U3-2
+Removed Member From Class: ClassName=Sheet1 Member=U3
+Added Component: Designator=U?(A768X-EC800M-FP)
+Added Pin To Net: NetName=NetH3_7 Pin=U?-2
+Added Pin To Net: NetName=VCC Pin=U?-8
+Added Pin To Net: NetName=NetH3_5 Pin=U?-9
+Added Pin To Net: NetName=NetH3_4 Pin=U?-10
+Added Pin To Net: NetName=NetH3_3 Pin=U?-11
+Added Pin To Net: NetName=GND Pin=U?-12
+Added Member To Class: ClassName=Sheet1 Member=Component U? Module 4G A7680C

@@ -1,0 +1,69 @@
+Protel Design System Design Rule Check
+PCB File : C:\Users\Admin\Downloads\GPS_Tracker (2)-20241102T003924Z-007\GPS_Tracker (2)\PCB1.PcbDoc
+Date     : 11/10/2024
+Time     : 9:30:42 PM
+
+Processing Rule : Clearance Constraint (Gap=15mil) (All),(All)
+   Violation between Clearance Constraint: (14.173mil < 15mil) Between Pad U2-1(597.598mil,1549.409mil) on Bottom Layer And Pad U2-2(635mil,1549.409mil) on Bottom Layer 
+   Violation between Clearance Constraint: (14.173mil < 15mil) Between Pad U2-2(635mil,1549.409mil) on Bottom Layer And Pad U2-3(672.402mil,1549.409mil) on Bottom Layer 
+   Violation between Clearance Constraint: (10.874mil < 15mil) Between Pad U2-2(635mil,1549.409mil) on Bottom Layer And Track (597.512mil,1549.496mil)(597.512mil,1662.488mil) on Bottom Layer 
+   Violation between Clearance Constraint: (10.787mil < 15mil) Between Pad U2-2(635mil,1549.409mil) on Bottom Layer And Track (597.512mil,1549.496mil)(597.598mil,1549.409mil) on Bottom Layer 
+   Violation between Clearance Constraint: (10.787mil < 15mil) Between Pad U2-2(635mil,1549.409mil) on Bottom Layer And Track (672.402mil,1558.228mil)(672.402mil,1587.598mil) on Bottom Layer 
+Rule Violations :5
+
+Processing Rule : Short-Circuit Constraint (Allowed=No) (All),(All)
+Rule Violations :0
+
+Processing Rule : Un-Routed Net Constraint ( (All) )
+Rule Violations :0
+
+Processing Rule : Modified Polygon (Allow modified: No), (Allow shelved: No)
+Rule Violations :0
+
+Processing Rule : Width Constraint (Min=20mil) (Max=50mil) (Preferred=30mil) (All)
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=20mil) (Conductor Width=10mil) (Air Gap=10mil) (Entries=4) (InPadClass('PowerPads'))
+Rule Violations :0
+
+Processing Rule : Power Plane Connect Rule(Relief Connect )(Expansion=11.811mil) (Conductor Width=15mil) (Air Gap=5mil) (Entries=4) (All)
+Rule Violations :0
+
+Processing Rule : Minimum Annular Ring (Minimum=3mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole Size Constraint (Min=11.811mil) (Max=248.031mil) (All)
+Rule Violations :0
+
+Processing Rule : Hole To Hole Clearance (Gap=9.842mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Minimum Solder Mask Sliver (Gap=0mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Silk To Solder Mask (Clearance=1mil) (IsPad),(All)
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 1mil) Between Pad H1-2(1681.575mil,295mil) on Multi-Layer And Text "SET1" (1659.99mil,190.032mil) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mil]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 1mil) Between Pad R7-2(1495.134mil,662.425mil) on Bottom Layer And Text "U3" (1494mil,599mil) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mil]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 1mil) Between Pad U1-2(1110mil,535mil) on Multi-Layer And Text "C5" (1073.173mil,490.01mil) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mil]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 1mil) Between Pad U1-23(110mil,1135mil) on Multi-Layer And Text "C2" (61.827mil,1124.99mil) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mil]
+   Violation between Silk To Solder Mask Clearance Constraint: (Collision < 1mil) Between Pad U1-24(110mil,1035mil) on Multi-Layer And Text "C2" (61.827mil,1124.99mil) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mil]
+Rule Violations :5
+
+Processing Rule : Silk to Silk (Clearance=0mil) (All),(All)
+Rule Violations :0
+
+Processing Rule : Net Antennae (Tolerance=0mil) (All)
+Rule Violations :0
+
+Processing Rule : Board Clearance Constraint (Gap=0mil) (All)
+   Violation between Board Outline Clearance(Outline Edge): (Collision < 7.874mil) Between Board Edge And Text "C17" (2227.668mil,2716.963mil) on Bottom Overlay 
+   Violation between Board Outline Clearance(Outline Edge): (Collision < 7.874mil) Between Board Edge And Text "H2" (1208mil,2688mil) on Top Overlay 
+Rule Violations :2
+
+Processing Rule : Height Constraint (Min=0mil) (Max=71497.938mil) (Prefered=500mil) (All)
+Rule Violations :0
+
+
+Violations Detected : 12
+Waived Violations : 0
+Time Elapsed        : 00:00:01

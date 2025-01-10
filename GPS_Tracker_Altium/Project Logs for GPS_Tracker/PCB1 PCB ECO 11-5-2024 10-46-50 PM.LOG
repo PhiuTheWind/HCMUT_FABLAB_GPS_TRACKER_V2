@@ -1,0 +1,23 @@
+Removed Pin From Net: NetName=VCC Pin=C8-2
+Removed Pin From Net: NetName=VCC Pin=H1-1
+Removed Pin From Net: NetName=3V3 Pin=J1-1
+Removed Pin From Net: NetName=VCC Pin=P1-1
+Removed Pin From Net: NetName=VCC Pin=R3-2
+Removed Pin From Net: NetName=VCC Pin=U2-1
+Change Component Description : Designator=J1 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Change Net Name : Old Net Name=VCC New Net Name=NetC11_1
+Change Net Color : Old Net Color=Lime New Net Color=Default
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-1
+Added Net: Name=NetJ1_1
+Added Pin To Net: NetName=NetQ1_1 Pin=U1-27
+Added Net: Name=NetQ1_1
+Added Pin To Net: NetName=NetQ2_1 Pin=U1-28
+Added Net: Name=NetQ2_1
+Added Pin To Net: NetName=VCC Pin=C8-2
+Added Pin To Net: NetName=VCC Pin=H1-1
+Added Pin To Net: NetName=VCC Pin=P1-1
+Added Pin To Net: NetName=VCC Pin=R3-2
+Added Pin To Net: NetName=VCC Pin=U2-1
+Added Net: Name=VCC
+Added Member To Class: ClassName=Sheet1 Member=Component C6 100uF
+Added Room: Name=Sheet1

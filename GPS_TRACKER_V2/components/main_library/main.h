@@ -12,21 +12,28 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include <math.h>
+#include <string.h>
+#include <esp_wifi.h>
 
+#include "nvs_flash.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
+#include "freertos/queue.h"
+#include "esp_log.h"
 
 // Define GPIO pins
 #define INT_PIN            GPIO_NUM_2
 #define GPIO_GPS_TRIGGER   GPIO_NUM_13
 #define GPIO_SIM_TRIGGER   GPIO_NUM_12
 #define GPIO_PEN           GPIO_NUM_32
-
+#define GPIO_GPS_PPS     GPIO_NUM_4
 // Define sleep and wake durations (in seconds)
-#define TIME_TO_WAKE       15
+#define TIME_TO_WAKE       10
 // #define TIME_TO_SLEEP    15 // Uncomment and use if you plan to use TIME_TO_SLEEP
 
 // Declare external variables
 extern Adafruit_MPU6050 mpu;
-extern RTC_DATA_ATTR int wake_count;
+extern int wake_count;
 
 // Function prototypes
 void set_gpio_level(gpio_num_t gpio, int level);

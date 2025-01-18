@@ -1,5 +1,4 @@
-// gps.c
-
+// GPS.c
 #include "gps.h"
 #include "esp_log.h"
 #include <math.h>
@@ -7,14 +6,21 @@
 #include <string.h>
 #include <stdlib.h>
 #include "driver/uart.h"
+
 static const char *TAG = "GPS_PROCESS";
+
 // Hàm chuyển đổi độ sang radian
 static double deg2rad(double deg) {
     return deg * (M_PI / 180.0);
 }
+
 bool diff_location = false;
 bool diff_location_flag = false; 
 
+//Biến cờ khác địa chỉ toàn cục
+int flag_dif_location = 0;
+// Định nghĩa biến toàn cục
+gps_data_t global_gps_data;
 
 // Hàm Haversine để tính khoảng cách giữa hai điểm GPS (km)
 double haversine(double lat1, double lon1, double lat2, double lon2) {
@@ -82,10 +88,7 @@ void utc_to_vn_time(const char *utc_time_str, char *vn_time_str) {
     snprintf(vn_time_str, 9, "%02d:%02d:%02d", hour, minute, second);
 }
 
-// Hàm xử lý câu GNRMC
-void processGNRMC(char *gpsData)
-{
-    // Tách các trường trong câu GNRMC dựa trên dấu phẩy
+void processGNRMC(char *gpsData) {
     char *fields[20];
     int field_count = 0;
 
@@ -95,67 +98,78 @@ void processGNRMC(char *gpsData)
         token = strtok(NULL, ",");
     }
 
-    if (field_count < 12) { // Đảm bảo đủ trường cần thiết
+    if (field_count < 12) {
         ESP_LOGW(TAG, "Incomplete GNRMC data");
         return;
     }
 
     // Time (UTC) và chuyển đổi sang giờ Việt Nam
-    char vn_time_str[9] = {0};
     if (strlen(fields[1]) >= 6) {
-        utc_to_vn_time(fields[1], vn_time_str);
-        ESP_LOGI(TAG, "Time (Vietnam): %s", vn_time_str);
+        utc_to_vn_time(fields[1], global_gps_data.time);
+        ESP_LOGI(TAG, "Time (Vietnam): %s", global_gps_data.time);
     } else {
+        strncpy(global_gps_data.time, "Invalid", sizeof(global_gps_data.time));
         ESP_LOGI(TAG, "Time (Vietnam): Invalid");
     }
 
     // Status
-    const char *status = (strcmp(fields[2], "A") == 0) ? "Successfully located" : "Unsuccessfully located";
-    ESP_LOGI(TAG, "Status: %s", status);
+    strncpy(global_gps_data.status, (strcmp(fields[2], "A") == 0) ? "Successfully located" : "Unsuccessfully located", sizeof(global_gps_data.status));
+    ESP_LOGI(TAG, "Status: %s", global_gps_data.status);
 
     // Latitude
-    double latitude = nmea_to_decimal_degree(fields[3], fields[4][0], 2); // 2 chữ số cho latitude
-    ESP_LOGI(TAG, "Latitude: %.6f°", latitude);
+    global_gps_data.latitude = nmea_to_decimal_degree(fields[3], fields[4][0], 2);
+    ESP_LOGI(TAG, "Latitude: %.6f°", global_gps_data.latitude);
 
     // Longitude
-    double longitude = nmea_to_decimal_degree(fields[5], fields[6][0], 3); // 3 chữ số cho longitude
-    ESP_LOGI(TAG, "Longitude: %.6f°", longitude);
+    global_gps_data.longitude = nmea_to_decimal_degree(fields[5], fields[6][0], 3);
+    ESP_LOGI(TAG, "Longitude: %.6f°", global_gps_data.longitude);
 
+    // Distance
+    global_gps_data.distance = haversine(GPS_FIXED_LATITUDE, GPS_FIXED_LONGITUDE, global_gps_data.latitude, global_gps_data.longitude);
+    ESP_LOGI(TAG, "Distance to Fixed Point: %.3f km", global_gps_data.distance);
 
-    // Tính khoảng cách giữa vị trí cố định và vị trí hiện tại
-    double distance = haversine(GPS_FIXED_LATITUDE, GPS_FIXED_LONGITUDE, latitude, longitude);
-    ESP_LOGI(TAG, "Distance to Fixed Point: %.3f km", distance);
-     
-    if (strcmp(status, "Successfully located") == 0) {
-        // Kiểm tra nếu khoảng cách >= 0.020 km (20 mét)
-        if (distance >= 0.020) {
-            ESP_LOGI(TAG, "Distance is greater than or equal to 20 meters. Executing action...");
-            diff_location = true;
-        }
+    //TEST
+    // if (strcmp(global_gps_data.status, "Successfully located") == 0 && global_gps_data.distance > 0.020) {
+    //     flag_dif_location++;
+    //     if (flag_dif_location >= 5) {
+    //         diff_location = true;
+    //         global_gps_data.Stolen = true;
+    //         flag_dif_location = 0;
+    //         ESP_LOGI(TAG, "Distance exceeded threshold. diff_location set to true.");
+    //     }
+    // }
+
+    //Condition Check
+    if (strcmp(global_gps_data.status, "Successfully located") == 0 && global_gps_data.distance > 0.020) {
+        diff_location = true;
+        global_gps_data.Stolen = true;
+        ESP_LOGI(TAG, "Distance exceeded threshold. diff_location set to true.");
     }
-
-    // Course (degrees)
-    double course = atof(fields[8]);
-    ESP_LOGI(TAG, "Course (degrees): %.2f°", course);
 
     // Date
     if (strlen(fields[9]) >= 6) {
-        char date_str[11];
-        snprintf(date_str, sizeof(date_str), "%.*s/%.*s/20%.*s",
-                 2, fields[9], 2, fields[9]+2, 2, fields[9]+4);
-        ESP_LOGI(TAG, "Date: %s", date_str);
+        snprintf(global_gps_data.date, sizeof(global_gps_data.date), "%.*s/%.*s/20%.*s",
+                 2, fields[9], 2, fields[9] + 2, 2, fields[9] + 4);
+        ESP_LOGI(TAG, "Date: %s", global_gps_data.date);
     } else {
+        strncpy(global_gps_data.date, "Invalid", sizeof(global_gps_data.date));
         ESP_LOGI(TAG, "Date: Invalid");
     }
 
-    ESP_LOGI(TAG, "=============================");
+    // Battery Capacity
+    float battery_voltage = read_battery_voltage();
+    global_gps_data.battery_capacity = calculate_battery_capacity(battery_voltage);
+    ESP_LOGI(TAG, "Battery Capacity: %d%%", global_gps_data.battery_capacity);
+
 }
+    
 
 void check_dif_location() {
     // Giả lập logic kiểm tra dif_location
     // Ví dụ: Kiểm tra tín hiệu GPS hoặc dữ liệu UART
     if (diff_location == true) {
         diff_location_flag = true;
+        diff_location = false;
     } else {
         diff_location_flag = false;
     }

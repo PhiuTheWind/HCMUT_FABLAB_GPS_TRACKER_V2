@@ -6,7 +6,6 @@
 #include "gps.h" // Bao gồm tệp header của GPS
 #include "driver/uart.h"
 
-
 // ------------------------- Sleep Control Variables ------------------------
 RTC_DATA_ATTR int wake_count = 0;
 RTC_DATA_ATTR float initial_roll = 0.0f, initial_pitch = 0.0f, initial_yaw = 0.0f;
@@ -18,7 +17,7 @@ bool steel_mode = false;
 bool read_task_delete = false;
 
 // ------------------------- Logging Tag -------------------------
-static const char *TAG = "MPU6050_APP";
+static const char *TAG = "ESP32_SYSTEM";
 
 // ------------------------- MPU6050 Variables -------------------------
 Adafruit_MPU6050 mpu;
@@ -108,7 +107,7 @@ void setup_mpu6050() {
         }
     }
     ESP_LOGI(TAG, "MPU6050 initialized successfully");
-
+   
     // Configure MPU6050
     mpu.setAccelerometerRange(MPU6050_RANGE_8_G);
     mpu.setGyroRange(MPU6050_RANGE_500_DEG);
@@ -123,6 +122,7 @@ void setup_mpu6050() {
     mpu.setMotionInterrupt(true);
 
     ESP_LOGI(TAG, "MPU6050 configuration done.");
+    vTaskDelay(3000);
 }
 
 
@@ -254,9 +254,12 @@ void read_mpu6050_task(void *pvParameter) {
         if (wake_count <= 1) {
             initial_roll = roll;
             initial_pitch = pitch;
-            initial_yaw = yaw;
+            //initial_yaw = yaw;
+
             // In dữ liệu cho mục đích gỡ lỗi
-            ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f | Yaw: %.2f", roll, pitch, yaw);
+            //ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f | Yaw: %.2f", roll, pitch, yaw);
+            ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
+            
             continue; // Bỏ qua kiểm tra nghiêng cho lần đầu tiên
         }
 
@@ -269,10 +272,11 @@ void read_mpu6050_task(void *pvParameter) {
 
             // Kiểm tra nghiêng quá ngưỡng (ví dụ: >20 độ từ vị trí ban đầu)
             if ((fabsf(roll - initial_roll) >= tilt_threshold || 
-                fabsf(pitch - initial_pitch) >= tilt_threshold || 
-                fabsf(yaw - initial_yaw) >= tilt_threshold_yaw)) {
+                fabsf(pitch - initial_pitch) >= tilt_threshold))
+                //fabsf(yaw - initial_yaw) >= tilt_threshold_yaw)) 
+                {
                 ESP_LOGI(TAG, "Device is tilted beyond threshold!");
-                ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f | Yaw: %.2f", roll, pitch, yaw);
+                ESP_LOGI(TAG, "Roll: %.2f | Pitch: %.2f", roll, pitch);
                 // Thực hiện hành động khi nghiêng quá ngưỡng nếu cần
 
                 // Đặt cờ để đánh dấu   
@@ -289,6 +293,31 @@ void read_mpu6050_task(void *pvParameter) {
     }
 }
 
+// ------------------ Chế Độ Ngủ (Deep Sleep) ------------------
+void enter_deep_sleep() {
+    ESP_LOGI(TAG, "Entering deep sleep mode...");
+    esp_sleep_enable_ext0_wakeup(GPIO_NUM_2, 0); // Cấu hình chân GPIO để đánh thức
+    esp_deep_sleep_start();
+}
+// Function to set-up GPIO level
+/**
+ * @brief Cài đặt mức GPIO
+ */
+void set_gpio_level(gpio_num_t gpio, int level) {
+    rtc_gpio_hold_dis(gpio);
+    rtc_gpio_set_level(gpio, level);
+    rtc_gpio_hold_en(gpio);
+}
+
+//Set GPIO về chế độ ngủ
+void set_sleep_gpio()
+{
+    // Cài đặt GPIOs cho chế độ mặc định
+    set_gpio_level(GPIO_GPS_TRIGGER, 1);
+    set_gpio_level(GPIO_SIM_TRIGGER, 0);
+    set_gpio_level(GPIO_PEN, 0);
+}
+
 // ====================================================================
 //                      GPS Functions
 // ====================================================================
@@ -298,7 +327,7 @@ void read_mpu6050_task(void *pvParameter) {
  */
 void gps_pps_monitor() {
     TickType_t startTick = xTaskGetTickCount(); // Lấy thời gian bắt đầu
-        const TickType_t runDuration = pdMS_TO_TICKS(2 * 60 * 1000); // 2 phút
+    const TickType_t runDuration = pdMS_TO_TICKS(2 * 60 * 1000); // 2 phút
 
     ESP_LOGI(TAG, "Starting GPS PPS monitoring for 2 minutes...");
 
@@ -383,37 +412,36 @@ bool read_uart2_data(char *buffer, int buffer_size) {
     return false; // Không có dữ liệu hợp lệ được xử lý
 }
 
-// ------------------ Task UART2 ------------------
-void uart2_task(void *pvParameters) {
-    
-    // Cấp phát buffer
-    char *buffer = (char *)malloc(GPS_UART2_BUFFER_SIZE);
-    if (!buffer) {
-        ESP_LOGE(TAG, "Failed to allocate memory for UART2 buffer");
-        vTaskDelete(NULL);
-        return;
-    }
-
-    ESP_LOGI(TAG, "Start uart2_task, monitoring UART2 data...");
-
-    TickType_t startTick = xTaskGetTickCount();
-    const TickType_t runDuration = pdMS_TO_TICKS(5 * 60 * 1000); // 5 phút
-
-    while ((xTaskGetTickCount() - startTick) < runDuration) {
-        bool success = read_uart2_data(buffer, GPS_UART2_BUFFER_SIZE);
-        if (success) {
-            ESP_LOGI(TAG, "Data successfully processed.");
-            // Thực hiện các hành động khác nếu cần
+    // ------------------ Task UART2 ------------------
+    void uart2_task(void *pvParameters) {
+        // Cấp phát buffer
+        char *buffer = (char *)malloc(GPS_UART2_BUFFER_SIZE);
+        if (!buffer) {
+            ESP_LOGE(TAG, "Failed to allocate memory for UART2 buffer");
+            vTaskDelete(NULL);
+            return;
         }
 
-        // Nghỉ 1 giây để tránh chiếm CPU
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
+        ESP_LOGI(TAG, "Start uart2_task, monitoring UART2 data...");
 
-    free(buffer); // Giải phóng bộ nhớ trước khi kết thúc
-    ESP_LOGI(TAG, "uart2_task completed after 5 minutes.");
-    vTaskDelete(NULL); // Xóa task sau khi hoàn thành
-}
+        TickType_t startTick = xTaskGetTickCount();
+        const TickType_t runDuration = pdMS_TO_TICKS(5 * 60 * 1000); // 5 phút
+
+        while ((xTaskGetTickCount() - startTick) < runDuration) {
+            bool success = read_uart2_data(buffer, GPS_UART2_BUFFER_SIZE);
+            if (success) {
+                ESP_LOGI(TAG, "Data successfully processed.");
+                // Thực hiện các hành động khác nếu cần
+            }
+
+            // Nghỉ 5 giây để tránh chiếm CPU
+            vTaskDelay(pdMS_TO_TICKS(5000));
+        }
+
+        free(buffer); // Giải phóng bộ nhớ trước khi kết thúc
+        ESP_LOGI(TAG, "uart2_task completed after 5 minutes.");
+        vTaskDelete(NULL); // Xóa task sau khi hoàn thành
+    }
 
 // ------------------ Quản Lý Task UART2 ------------------
 TaskHandle_t uart2TaskHandle = NULL;
@@ -436,72 +464,6 @@ void stop_uart2_task() {
         ESP_LOGW(TAG, "uart2_task is not running.");
     }
 }
-
-// ------------------ Chế Độ Ngủ (Deep Sleep) ------------------
-void enter_deep_sleep() {
-    ESP_LOGI(TAG, "Entering deep sleep mode...");
-    esp_sleep_enable_ext0_wakeup(GPIO_NUM_2, 0); // Cấu hình chân GPIO để đánh thức
-    esp_deep_sleep_start();
-}
-
-
-
-// ------------------ Vòng Lặp Chính ------------------
-void monitor_uart_with_condition() {
-    while (1) {
-        ESP_LOGI(TAG, "Checking dif_location condition...");
-
-        check_dif_location(); // Cập nhật giá trị `dif_location`
-
-        if (diff_location_flag == false) {
-            ESP_LOGI(TAG, "dif_location == false. Starting UART2 Task for 5 minutes.");
-
-            // Khởi tạo Task UART2
-            start_uart2_task();
-
-            // Chờ Task UART2 chạy 5 phút
-            vTaskDelay(pdMS_TO_TICKS(5 * 60 * 1000)); // 5 phút
-
-            // Dừng Task UART2
-            stop_uart2_task();
-
-        } 
-        else {
-            ESP_LOGI(TAG, "dif_location == true. Continuing UART2 Task.");
-
-            // Nếu Task chưa được khởi tạo, tạo lại
-            if (uart2TaskHandle == NULL) {
-                start_uart2_task();
-            } 
-            else {
-                ESP_LOGI(TAG, "UART2 Task is already running, continuing...");
-            }
-
-            // Kiểm tra lại sau 1 phút
-            vTaskDelay(pdMS_TO_TICKS(60000)); // 1 phút
-        }
-    }
-}
-
-// Function to set-up GPIO level
-/**
- * @brief Cài đặt mức GPIO
- */
-void set_gpio_level(gpio_num_t gpio, int level) {
-    rtc_gpio_hold_dis(gpio);
-    rtc_gpio_set_level(gpio, level);
-    rtc_gpio_hold_en(gpio);
-}
-
-//Set GPIO về chế độ ngủ
-void set_sleep_gpio()
-{
-    // Cài đặt GPIOs cho chế độ mặc định
-    set_gpio_level(GPIO_GPS_TRIGGER, 1);
-    set_gpio_level(GPIO_SIM_TRIGGER, 0);
-    set_gpio_level(GPIO_PEN, 0);
-}
-
 
 
 // ====================================================================
@@ -539,14 +501,12 @@ extern "C" void app_main() {
     ESP_LOGI(TAG, "Wake count: %d", wake_count);
     ESP_LOGI(TAG, "Initial pitch: %f", initial_pitch);
     ESP_LOGI(TAG, "Initial roll: %f", initial_roll);
-    ESP_LOGI(TAG, "Initial yaw: %f", initial_yaw);
+    //ESP_LOGI(TAG, "Initial yaw: %f", initial_yaw);
 
      // Lưu handle của app_main
     appMainTaskHandle = xTaskGetCurrentTaskHandle();
     ESP_LOGI(TAG, "app_main started. Handle: %p", (void*)appMainTaskHandle);
     
-
-
     // Kiểm tra lý do thức dậy từ deep sleep
     if (esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_EXT0) {
         ESP_LOGI(TAG, "Woke up from EXT0 interrupt.");
@@ -589,9 +549,9 @@ extern "C" void app_main() {
 
         // Tạo task đọc dữ liệu từ MPU6050
         if (xTaskCreate(&read_mpu6050_task, "read_mpu6050_task", 8192, (void*)appMainTaskHandle, 5, NULL) == pdPASS) {
-            ESP_LOGI(TAG, "read_mpu6050_task created successfully.");
+            ESP_LOGI(TAG, "Task: read_mpu6050_task created successfully.");
         } else {
-            ESP_LOGE(TAG, "Failed to create read_mpu6050_task.");
+            ESP_LOGE(TAG, "Failed to create Task: read_mpu6050_task.");
         }
 
         // Đợi 20 giây trước khi ngủ sâu lần đầu tiên
@@ -599,7 +559,8 @@ extern "C" void app_main() {
         vTaskDelay(pdMS_TO_TICKS(20000)); // 20 giây
         ESP_LOGI(TAG, "After 20 seconds delay.");
         ESP_LOGI(TAG, "Initial orientation set.");
-        ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f | Initial Yaw: %.2f", initial_roll, initial_pitch, initial_yaw);
+        ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f", initial_roll, initial_pitch);
+        //ESP_LOGI(TAG, "Initial Roll: %.2f | Initial Pitch: %.2f | Initial Yaw: %.2f", initial_roll, initial_pitch, initial_yaw);
         // Cấu hình điều kiện đánh thức trước khi ngủ
         esp_sleep_enable_ext0_wakeup(INT_PIN, 0);
         ESP_LOGI(TAG, "Wake-up condition configured.");
@@ -609,41 +570,110 @@ extern "C" void app_main() {
         esp_deep_sleep_start();
     }
 
-    // Kiểm tra wake_count >1 đã được xử lý ở trên
+    // Kiểm tra wake_count > 1 đã được xử lý ở trên
     // Kiểm tra giá trị flag_for_wake để quyết định hành động
     if (wake_count > 1) {
         if (flag_for_wake >= 50) {
             ESP_LOGI(TAG, "flag_for_wake = 50. Setting GPIOs for Steel mode.");
+            //Sim First Sending
+            set_gpio_level(GPIO_SIM_TRIGGER, 1);
+            set_gpio_level(GPIO_PEN, 1);
+            uartsim_init();
+            mqtt_connect();
+            send_gps_data_to_mqtt();
+
+            //Turn off SIM for GPS connect
+            set_gpio_level(GPIO_SIM_TRIGGER, 0);
+            set_gpio_level(GPIO_PEN, 0);
+            vTaskDelay(1000);
+
             set_gpio_level(GPIO_GPS_TRIGGER, 0);
             //set_gpio_level(GPPIO_GPS_PPS, 1);
             ESP_LOGI(TAG, "Steel mode is on...");
             printf("Steel mode is on...\n");
+
         }
     }
 
 
     //GPS SECTION
     ESP_LOGI(TAG, "Starting GPS Tracking...");
-    // Khởi tạo UART2
+    // Khởi tạo UART2 và GPS
     init_uart2();
-
-
     gps_pps_monitor();
-    if (gps_flag >= 10)
-    {   
-        //SIM WAKE-UP
+
+    if (gps_flag >= 10) {
+        // 1) Thực hiện công việc với GPS, SIM...
         set_gpio_level(GPIO_SIM_TRIGGER, 1);
         set_gpio_level(GPIO_PEN, 1);
+        //uartsim_init();
 
-        ESP_LOGI(TAG, "Starting UART Monitoring with Condition...");
+        ESP_LOGI(TAG, "Starting Reading GPS Data");
+        
 
-        // Bắt đầu vòng lặp kiểm tra điều kiện và UART
-        monitor_uart_with_condition();
+        // 2) Khởi tạo timer (nếu chưa init ở đâu khác)
+        my_timer_init();
 
-        //Setting for sleep mode
+        // 3) Ta dùng vòng while(1) để dễ dàng “lặp” thêm 5 phút
+        while (true)
+        {
+            // a) Bắt đầu đếm 5 phút
+            my_timer_start();  
+            
+            // b) Chờ cho đến khi 5 phút kết thúc 
+            while (!g_timer_done)
+            {
+                // Khởi tạo Task UART2
+                start_uart2_task();
+
+                // Chờ Task UART2 chạy 30 giây
+                vTaskDelay(pdMS_TO_TICKS(30 * 1000)); // 30 giây
+
+                // Dừng Task UART2
+                stop_uart2_task();
+                ESP_LOGI(TAG, "READ_GPS_TASK finish");
+
+                //In ra dữ liệu sẽ gửi lên MQTT
+                ESP_LOGI(TAG, "Updated global GPS data: Time=%s, Stolen=%s, Lat=%.6f, Lon=%.6f, Batt=%d%%, Date=%s",
+                global_gps_data.time, 
+                global_gps_data.Stolen ? "true" : "false",  // Chuyển đổi bool thành chuỗi
+                global_gps_data.latitude, 
+                global_gps_data.longitude, 
+                global_gps_data.battery_capacity, 
+                global_gps_data.date);
+
+                
+                // ESP_LOGI(TAG, "Updated global GPS data: Time=%s, Stolen=%s, Lat=%.6f, Lon=%.6f, Dist=%.3f km, Batt=%d%%, Date=%s",
+                // global_gps_data.time, global_gps_data.Stolen, global_gps_data.latitude, global_gps_data.longitude,
+                // global_gps_data.distance, global_gps_data.battery_capacity, global_gps_data.date);
+
+                //Xử lý MQTT
+                mqtt_connect();
+                send_gps_data_to_mqtt();
+            }
+
+
+            // c) Timer báo hết 5 phút => reset cờ
+            g_timer_done = false;  
+            
+            // d) Kiểm tra điều kiện
+            ESP_LOGI(TAG, "Checking dif_location condition...");
+            check_dif_location(); // Cập nhật giá trị `dif_location`
+            if (diff_location_flag == false) {
+                // Nếu *KHÔNG* thỏa ⇒ break => dừng lặp => đi ngủ
+                ESP_LOGI(TAG, "Safe Location => Go to deep sleep.");
+                break;
+            } else {
+                ESP_LOGI(TAG, "Different Location => RUN another 5 minutes loop.");
+                // Nếu thỏa => tiếp tục vòng while => timer_start() lần nữa
+                // (Vòng lặp lại từ đầu)
+            }
+        }
+
+        // 4) Sau khi thoát vòng lặp => Deep Sleep
+        ESP_LOGI(TAG, "Now going to Deep Sleep...");
         esp_sleep_enable_ext0_wakeup(INT_PIN, 0);
         Serial.flush();
-
         set_sleep_gpio();
         esp_deep_sleep_start();
     }

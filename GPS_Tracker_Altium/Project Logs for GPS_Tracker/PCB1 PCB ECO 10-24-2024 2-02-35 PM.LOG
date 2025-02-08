@@ -1,0 +1,5 @@
+Change Component Description : Designator=J1 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Added Member To Class: ClassName=Sheet1 Member=Component C10 10uF
+Added Member To Class: ClassName=Sheet1 Member=Component R2 10K
+Added Member To Class: ClassName=Sheet1 Member=Component U1 ESP32_NODEMCU
+Added Member To Class: ClassName=Sheet1 Member=Component U2 SPX3819

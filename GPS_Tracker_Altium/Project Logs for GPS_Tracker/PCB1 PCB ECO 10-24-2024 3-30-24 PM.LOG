@@ -1,0 +1,3 @@
+Added Pin To Net: NetName=VCC Pin=U3-8
+Change Net Color : Old Net Color=Black New Net Color=RGB(74, 134, 232)
+Added Member To Class: ClassName=Sheet1 Member=Component U1 ESP32_NODEMCU

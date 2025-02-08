@@ -1,0 +1,63 @@
+Removed Pin From Net: NetName=GND Pin=C21-1
+Removed Pin From Net: NetName=GND Pin=C22-1
+Removed Pin From Net: NetName=GND Pin=H3-2
+Removed Pin From Net: NetName=GND Pin=R9-1
+Removed Pin From Net: NetName=GND Pin=R14-1
+Removed Pin From Net: NetName=GND Pin=R15-2
+Removed Pin From Net: NetName=GND Pin=U4-2
+Removed Pin From Net: NetName=3V3 Pin=U?-8
+Removed Member From Class: ClassName=Sheet1 Member=C21
+Removed Member From Class: ClassName=Sheet1 Member=C22
+Removed Member From Class: ClassName=Sheet1 Member=D3
+Removed Member From Class: ClassName=Sheet1 Member=H3
+Removed Member From Class: ClassName=Sheet1 Member=L1
+Removed Member From Class: ClassName=Sheet1 Member=LED1
+Removed Member From Class: ClassName=Sheet1 Member=R9
+Removed Member From Class: ClassName=Sheet1 Member=R14
+Removed Member From Class: ClassName=Sheet1 Member=R15
+Removed Member From Class: ClassName=Sheet1 Member=R16
+Removed Member From Class: ClassName=Sheet1 Member=U5
+Change Component Designator: OldDesignator=C13 NewDesignator=C11
+Change Component Designator: OldDesignator=C14 NewDesignator=C12
+Change Component Designator: OldDesignator=C15 NewDesignator=C13
+Change Component Designator: OldDesignator=C16 NewDesignator=C14
+Change Component Designator: OldDesignator=C17 NewDesignator=C15
+Change Component Designator: OldDesignator=C18 NewDesignator=C16
+Change Component Designator: OldDesignator=C19 NewDesignator=C17
+Change Component Designator: OldDesignator=C20 NewDesignator=C18
+Change Component Designator: OldDesignator=H4 NewDesignator=H1
+Change Component Designator: OldDesignator=J2 NewDesignator=J1
+Change Component Designator: OldDesignator=R10 NewDesignator=R3
+Change Component Designator: OldDesignator=R11 NewDesignator=R4
+Change Component Designator: OldDesignator=U1 NewDesignator=U2
+Change Component Designator: OldDesignator=U2 NewDesignator=U1
+Change Component Designator: OldDesignator=U5 NewDesignator=U4
+Change Component Designator: OldDesignator=U? NewDesignator=U3
+Change Component Description : Designator=J1 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Added Pin To Net: NetName=VCC Pin=C11-1
+Added Pin To Net: NetName=VCC Pin=C12-1
+Added Pin To Net: NetName=VCC Pin=C13-1
+Added Pin To Net: NetName=VCC Pin=C14-1
+Added Pin To Net: NetName=VCC Pin=C15-1
+Added Pin To Net: NetName=VCC Pin=C16-1
+Added Pin To Net: NetName=VCC Pin=C17-1
+Added Pin To Net: NetName=VCC Pin=C18-1
+Added Pin To Net: NetName=VCC Pin=U3-8
+Change Net Name : Old Net Name=NetJ2_3 New Net Name=NetJ1_3
+Change Net Name : Old Net Name=NetJ2_4 New Net Name=NetJ1_4
+Change Net Name : Old Net Name=NetJ2_5 New Net Name=NetJ1_5
+Change Net Name : Old Net Name=NetJ2_6 New Net Name=NetJ1_6
+Change Net Color : Old Net Color=RGB(158, 161, 117) New Net Color=Black
+Added Pin To Net: NetName=NetU1_J4_4 Pin=U1-J4_4
+Added Pin To Net: NetName=NetU1_J4_4 Pin=U3-11
+Added Net: Name=NetU1_J4_4
+Added Pin To Net: NetName=NetU1_J4_5 Pin=U1-J4_5
+Added Pin To Net: NetName=NetU1_J4_5 Pin=U3-10
+Added Net: Name=NetU1_J4_5
+Added Pin To Net: NetName=NetU1_J5_9 Pin=U1-J5_9
+Added Pin To Net: NetName=NetU1_J5_9 Pin=U3-9
+Added Net: Name=NetU1_J5_9
+Added Pin To Net: NetName=NetU2_3 Pin=U2-3
+Added Net: Name=NetU2_3
+Added Pin To Net: NetName=NetU3_2 Pin=U3-2
+Added Net: Name=NetU3_2

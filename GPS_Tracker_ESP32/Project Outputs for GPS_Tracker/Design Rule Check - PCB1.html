@@ -1,0 +1,528 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html">
+<style type="text/css">
+		h1, h2, h3, h4, h5, h6 {
+			font-family : segoe ui;
+			color : black;
+			background-color : #EDE7D9;
+			padding: 0.3em;
+		}
+
+		h1 {
+			font-size: 1.2em;
+		}		
+
+		h2 {
+			font-size: 1.2em;
+		}
+
+		body {
+			font-family : segoe ui;
+		}
+
+		td, th {
+			padding: 0.5em;
+			text-align : left;
+			width: 10em;
+		}
+		th {
+			background-color : #EEEEEE;
+
+		}
+		th.column1, td.column1 {
+			text-align: left;
+			width : auto;
+		}
+		table {
+			width : 100%;
+			font-size: 0.9em;
+		}
+
+		.DRC_summary_header {
+			padding-bottom : 0.1em;
+			border : 0px solid black;
+			width: 100%;
+			align: left;
+		}
+
+		.DRC_summary_header_col1,
+		.DRC_summary_header_col2, 
+		.DRC_summary_header_col3 {
+			color : black;
+			font-size:100%;
+			padding : 0em;
+			padding-top : 0.2em;
+			padding-bottom 0.2em;
+			border : 0px solid black;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.DRC_summary_header_col1 {
+			font-weight: bold;
+			width: 8em;
+		}
+
+		.DRC_summary_header_col2 {
+			width: 0.1em;
+		
+		}
+
+		.DRC_summary_header_col3 {
+			width : auto;
+		}
+
+		.header_holder {
+		    Width = 100%;
+		    border = 0px solid green;
+		    padding = 0;
+		}
+
+
+		.front_matter, .front_matter_column1, .front_matter_column2, .front_matter_column3
+		{
+			left : 0;
+			top : 0;
+			padding: 0em;
+			padding-top : 0.1em;
+			border : 0px solid black;
+			width : 100%;
+			vertical-align: top;
+			text-align: left;
+		}
+
+		.front_matter_column1 {
+			width : 8em;
+			font-weight: bold;
+		}
+
+		.front_matter_column2 {
+			width: 0.1em;
+		}
+
+		.front_matter_column3 {
+			width : auto;
+		}
+
+		.total_column1, .total_column {
+			font-weight : bold;
+		}
+		.total_column1 {
+			text-align : left;
+		}
+		.warning, .error {
+			color : red;
+			font-weight : bold;
+		}
+		tr.onmouseout_odd {
+			background-color : #white;
+		}
+		tr.onmouseout_even { 
+			background-color : #FAFAFA;
+		}
+		tr.onmouseover_odd, tr.onmouseover_even { 
+			background-color : #EEEEEE;
+		} 
+		a:link, a:visited, .q a:link,.q a:active,.q {
+			color: #21489e; 
+		}
+		a:link.callback, a:visited.callback { 
+			color: #21489e;
+		}
+		a:link.customize, a:visited.customize {
+			color: #C0C0C0;
+			position: absolute; 
+			right: 10px;
+		}	
+		p.contents_level1 {
+			font-weight : bold;
+			font-size : 110%;
+			margin : 0.5em;
+		}
+		p.contents_level2 {
+			position : relative;
+			left : 20px;
+			margin : 0.5em;
+		}
+	</style><script type="text/javascript">
+		function coordToMils(coord) {
+			var number = coord / 10000;
+			
+			if (number != number.toFixed(3))
+				number = number.toFixed(3);
+
+			return number + 'mil'
+		}
+
+		function coordToMM(coord) {
+			var number = 0.0254 * coord / 10000;
+			
+			if (number != number.toFixed(4))
+				number = number.toFixed(4);
+			
+			return number + 'mm'
+		}
+	
+		function convertCoord(coordNode, units) {
+			for (var i = 0; i < coordNode.childNodes.length; i++) {
+				coordNode.removeChild(coordNode.childNodes[i]);
+			}
+
+			var coord = coordNode.getAttribute('value');
+			if (coord != null) {
+				if (units == 'mm') {
+					textNode = document.createTextNode(coordToMM(coord));
+					coordNode.appendChild(textNode);
+				} else if (units == 'mil') {
+					textNode = document.createTextNode(coordToMils(coord));		
+					coordNode.appendChild(textNode);	
+				}
+			}
+		}
+	
+		function convertUnits(unitNode, units) {
+			for (var i = 0; i < unitNode.childNodes.length; i++) {
+				unitNode.removeChild(unitNode.childNodes[i]);		
+			}
+		
+			textNode = document.createTextNode(units); 
+			unitNode.appendChild(textNode);
+		}
+	
+		function changeUnits(radio_input, units) {
+			if (radio_input.checked) {
+			
+				var elements = document.getElementsByName('coordinate');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertCoord(elements[i], units);
+					}
+				}
+	
+				var elements = document.getElementsByName('units');
+				if (elements) {
+					for (var i = 0; i < elements.length; i++) {
+						convertUnits(elements[i], units);
+					}
+				}
+			}
+		}
+	</script><title>Design Rule Verification Report</title>
+</head>
+<body onload=""><img ALT="Altium" src="
+			file://C:\Users\Public\Documents\Altium\AD21\Templates\AD_logo.png
+		"><h1>Design Rule Verification Report</h1>
+<table class="header_holder">
+<td class="column1">
+<table class="front_matter">
+<tr class="front_matter">
+<td class="front_matter_column1">Date:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">3/29/2025</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">2:15:10 PM</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Elapsed Time:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3">00:00:01</td>
+</tr>
+<tr class="front_matter">
+<td class="front_matter_column1">Filename:</td>
+<td class="front_matter_column2"></td>
+<td class="front_matter_column3"><a href="file:///C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc" class="file"><acronym title="C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc">C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc</acronym></a></td>
+</tr>
+</table>
+</td>
+<td class="column2">
+<table class="DRC_summary_header">
+<tr>
+<td class="DRC_summary_header_col1">Warnings:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3">0</td></tr>
+<tr>
+<td class="DRC_summary_header_col1">Rule Violations:</td>
+<td class="DRC_summary_header_col2"></td>
+<td class="DRC_summary_header_col3" style="color : red">60</td></tr>
+</table>
+</td>
+</table><a name="ID1IVKS1JYCXZ4JUM3KJEOY0500KL0B352UOCLDPBQGU53BHKFOB0D"><h2>Summary</h2></a><table>
+<tr>
+<th class="column1">Warnings</th>
+<th class="column2">Count</th>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">0</td>
+</tr>
+</table><br><table>
+<tr>
+<th class="column1">Rule Violations</th>
+<th class="column2">Count</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDDXFPGWPAOKGEEYA3EZQ4NIGE1GTRNW1N5DL3CGN1X5DWECRXJJFL">Clearance Constraint (Gap=0.508mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#ID2FXNGUZOKUD2C1MAKEWQVNGHDEVG2ACGCSPTEGECSTMKLU1BPUQC">Short-Circuit Constraint (Allowed=No) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID5KKS2UA2XSHVPW2KNYGMZZ1RTEP0PXTJZTKOYHBTEE4XLHYGE3DE">Un-Routed Net Constraint ( (All) )</a></td>
+<td class="column2">1</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDAQYMH2VCTXS2MI0UHOLUZLR4WQQVCEBP34P0LLBPXWZODSNWWHO">Modified Polygon (Allow modified: No), (Allow shelved: No)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#ID2MP0YPUEFUV3NOAIEZWYVUI1JPOSBJYWSJDBVFBG1GUM4SKZRY5F">Width Constraint (Min=0.762mm) (Max=1.27mm) (Preferred=0.889mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDX23OA15LEIMXLE51AQB3KRRLXLMA1E1DZRLK3MHRWOSQBRZK3UBE">Power Plane Connect Rule(Relief Connect )(Expansion=0.508mm) (Conductor Width=0.254mm) (Air Gap=0.254mm) (Entries=4) (InPadClass('PowerPads'))</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDXUEU3EH3KFADFEXXGJZQVK25IE53W1BDUURJR5PMANCNQIDML2CG">Power Plane Connect Rule(Relief Connect )(Expansion=0.3mm) (Conductor Width=0.381mm) (Air Gap=0.127mm) (Entries=4) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDT2XRPZMUYI1HHNSFEZ5ZD0CN5CZA4WNALAHG0ZGKQESAYC4TJTTK">Minimum Annular Ring (Minimum=0.076mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDRRD2B0SK12OWNJ2LGOR0DHEDKIPQMQJ2EUCX5LMYTSEW1M24FYNC">Hole Size Constraint (Min=0.3mm) (Max=6.3mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDZBF5UXPWDSUWHTJPITNQ5BOOIIVK2KYXFRHMANDW1A4ULSKULB3D">Hole To Hole Clearance (Gap=0.25mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDWKJVQGBAJLY4KVABSPTKNSILCLXNEL2KOXHEDVM4CTJOGEDND3TK">Minimum Solder Mask Sliver (Gap=0mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDIYT30LJDXEI4BZJAKOWOISQ4SD2CQRV1ZRZGTMHDISLCFSCXUGOI">Silk To Solder Mask (Clearance=0.025mm) (IsPad),(All)</a></td>
+<td class="column2">30</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDNGUTLZSABB0XMED4IOOPQMV1YMYYVCAM1LFNHZOVTVNDSQCU0VFG">Silk to Silk (Clearance=0mm) (All),(All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDXSWCYT5XJ3HEGDKVG0XUJ2W1ZE5WTHWXX2KQI4PGMFJIFQIFCFML">Net Antennae (Tolerance=0mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="#IDKLBTHW2U4UUMZFDWLHVRFHQZPKZ01I1IO4YENMUFKDWMF3TJUPI">Board Clearance Constraint (Gap=0mm) (All)</a></td>
+<td class="column2">29</td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="#IDSLGMXJUJFTWDPHJCCK03PEDPOHRVMA2R1BROZMW5NOUQPS5JPQE">Height Constraint (Min=0mm) (Max=1816.048mm) (Prefered=12.7mm) (All)</a></td>
+<td class="column2">0</td>
+</tr>
+<tr>
+<td style="font-weight : bold; text-align : right" class="column1">Total</td>
+<td style="font-weight : bold" class="column2">60</td>
+</tr>
+</table><br><a name="ID5KKS2UA2XSHVPW2KNYGMZZ1RTEP0PXTJZTKOYHBTEE4XLHYGE3DE"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Un-Routed Net Constraint ( (All) )</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1169.096mil|Location2.X=1432.362mil|Location1.Y=995.787mil|Location2.Y=1034.37mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1169.096mil|Location2.X=1432.362mil|Location1.Y=995.787mil|Location2.Y=1034.37mil|Absolute=True">Un-Routed Net Constraint: Net GND Between Track (32.235mm,13.101mm)(32.451mm,13.101mm) on Bottom Layer And Pad J1-S1(33.842mm,9.001mm) on Top Layer </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDIYT30LJDXEI4BZJAKOWOISQ4SD2CQRV1ZRZGTMHDISLCFSCXUGOI"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Silk To Solder Mask (Clearance=0.025mm) (IsPad),(All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=612.198mil|Location2.X=613.865mil|Location1.Y=3206.154mil|Location2.Y=3207.821mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=612.198mil|Location2.X=613.865mil|Location1.Y=3206.154mil|Location2.Y=3207.821mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad BUZZ1-1(16.571mm,66.371mm) on Multi-Layer And Text "MPU6050" (9.207mm,66.485mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=476.46mil|Location2.X=478.126mil|Location1.Y=3231.125mil|Location2.Y=3232.792mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=476.46mil|Location2.X=478.126mil|Location1.Y=3231.125mil|Location2.Y=3232.792mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad BUZZ1-2(12.111mm,66.361mm) on Multi-Layer And Text "MPU6050" (9.207mm,66.485mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1541.773mil|Location2.X=1543.44mil|Location1.Y=2226.214mil|Location2.Y=2227.881mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1541.773mil|Location2.X=1543.44mil|Location1.Y=2226.214mil|Location2.Y=2227.881mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C10-1(39.782mm,41.913mm) on Top Layer And Track (31.376mm,41.835mm)(58.349mm,41.835mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1466.97mil|Location2.X=1468.637mil|Location1.Y=2226.214mil|Location2.Y=2227.881mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1466.97mil|Location2.X=1468.637mil|Location1.Y=2226.214mil|Location2.Y=2227.881mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C10-2(37.882mm,41.913mm) on Top Layer And Track (31.376mm,41.835mm)(58.349mm,41.835mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2051.167mil|Location2.X=2052.833mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2051.167mil|Location2.X=2052.833mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C14-1(52.219mm,39.751mm) on Bottom Layer And Text "DIO1" (52.121mm,37.897mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1911.212mil|Location2.X=1912.879mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1911.212mil|Location2.X=1912.879mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C14-2(47.349mm,39.751mm) on Bottom Layer And Text "DIO1" (52.121mm,37.897mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2071.463mil|Location2.X=2073.13mil|Location1.Y=2807.207mil|Location2.Y=2808.874mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2071.463mil|Location2.X=2073.13mil|Location1.Y=2807.207mil|Location2.Y=2808.874mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C16-1(53.415mm,57.15mm) on Bottom Layer And Text "C15" (53.652mm,55.323mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2049.142mil|Location2.X=2050.809mil|Location1.Y=2883.3mil|Location2.Y=2884.967mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2049.142mil|Location2.X=2050.809mil|Location1.Y=2883.3mil|Location2.Y=2884.967mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C16-1(53.415mm,57.15mm) on Bottom Layer And Text "C18" (52.069mm,57.404mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1899.191mil|Location2.X=1900.858mil|Location1.Y=2883.3mil|Location2.Y=2884.967mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1899.191mil|Location2.X=1900.858mil|Location1.Y=2883.3mil|Location2.Y=2884.967mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C16-2(46.915mm,57.15mm) on Bottom Layer And Text "C18" (52.069mm,57.404mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.498mil|Location2.X=2038.165mil|Location1.Y=3027.204mil|Location2.Y=3028.871mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.498mil|Location2.X=2038.165mil|Location1.Y=3027.204mil|Location2.Y=3028.871mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C17-1(51.111mm,61.973mm) on Bottom Layer And Text "C16" (55.557mm,60.657mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.498mil|Location2.X=2038.165mil|Location1.Y=2977.22mil|Location2.Y=2978.887mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.498mil|Location2.X=2038.165mil|Location1.Y=2977.22mil|Location2.Y=2978.887mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C18-2(51.119mm,60.328mm) on Bottom Layer And Text "C16" (55.557mm,60.657mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1806.474mil|Location2.X=1808.14mil|Location1.Y=1254.183mil|Location2.Y=1255.85mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1806.474mil|Location2.X=1808.14mil|Location1.Y=1254.183mil|Location2.Y=1255.85mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C7-1(46.606mm,16.961mm) on Bottom Layer And Text "R6" (45.593mm,17.145mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1847.167mil|Location2.X=1848.833mil|Location1.Y=1223.316mil|Location2.Y=1224.983mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1847.167mil|Location2.X=1848.833mil|Location1.Y=1223.316mil|Location2.Y=1224.983mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C7-1(46.606mm,16.961mm) on Bottom Layer And Track (46.939mm,-1.473mm)(46.939mm,23.927mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1844.16mil|Location2.X=1845.827mil|Location1.Y=1294.17mil|Location2.Y=1295.837mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1844.16mil|Location2.X=1845.827mil|Location1.Y=1294.17mil|Location2.Y=1295.837mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C7-2(46.606mm,18.861mm) on Bottom Layer And Text "R6" (45.593mm,17.145mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1847.167mil|Location2.X=1848.833mil|Location1.Y=1298.12mil|Location2.Y=1299.786mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1847.167mil|Location2.X=1848.833mil|Location1.Y=1298.12mil|Location2.Y=1299.786mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad C7-2(46.606mm,18.861mm) on Bottom Layer And Track (46.939mm,-1.473mm)(46.939mm,23.927mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1835.025mil|Location2.X=1837.275mil|Location1.Y=973.891mil|Location2.Y=976.141mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1835.025mil|Location2.X=1837.275mil|Location1.Y=973.891mil|Location2.Y=976.141mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (0.008mm &lt; 0.025mm) Between Pad J1-S2(47.692mm,9.001mm) on Top Layer And Text "Q2" (46.507mm,11.303mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0.008mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1671.647mil|Location2.X=1673.314mil|Location1.Y=1328.249mil|Location2.Y=1329.915mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1671.647mil|Location2.X=1673.314mil|Location1.Y=1328.249mil|Location2.Y=1329.915mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad L1-1(41.981mm,19.939mm) on Multi-Layer And Track (42.481mm,12.189mm)(42.481mm,27.689mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1356.686mil|Location2.X=1358.353mil|Location1.Y=1331.751mil|Location2.Y=1333.418mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1356.686mil|Location2.X=1358.353mil|Location1.Y=1331.751mil|Location2.Y=1333.418mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad L1-2(34.981mm,19.939mm) on Multi-Layer And Track (34.481mm,12.189mm)(34.481mm,27.689mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1837.999mil|Location2.X=1839.665mil|Location1.Y=1055.276mil|Location2.Y=1056.942mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1837.999mil|Location2.X=1839.665mil|Location1.Y=1055.276mil|Location2.Y=1056.942mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad Q2-1(46.208mm,12.639mm) on Top Layer And Text "J1" (46.706mm,11.839mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=619.581mil|Location2.X=621.247mil|Location1.Y=2903.754mil|Location2.Y=2905.421mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=619.581mil|Location2.X=621.247mil|Location1.Y=2903.754mil|Location2.Y=2905.421mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad Q3-1(16.236mm,59.497mm) on Top Layer And Text "XDA" (16.828mm,56.452mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=561.667mil|Location2.X=563.333mil|Location1.Y=2866.45mil|Location2.Y=2868.117mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=561.667mil|Location2.X=563.333mil|Location1.Y=2866.45mil|Location2.Y=2868.117mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad Q3-2(13.736mm,58.547mm) on Top Layer And Text "SDA" (14.287mm,56.452mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=657.278mil|Location2.X=658.944mil|Location1.Y=2828.752mil|Location2.Y=2830.419mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=657.278mil|Location2.X=658.944mil|Location1.Y=2828.752mil|Location2.Y=2830.419mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad Q3-3(16.236mm,57.597mm) on Top Layer And Text "XDA" (16.828mm,56.452mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1541.144mil|Location2.X=1542.811mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1541.144mil|Location2.X=1542.811mil|Location1.Y=2131.147mil|Location2.Y=2132.814mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad R5-1(39.808mm,39.246mm) on Top Layer And Text "R3" (37.389mm,37.897mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1471.167mil|Location2.X=1472.833mil|Location1.Y=2096.742mil|Location2.Y=2098.408mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1471.167mil|Location2.X=1472.833mil|Location1.Y=2096.742mil|Location2.Y=2098.408mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad R5-2(37.908mm,39.246mm) on Top Layer And Text "R3" (37.389mm,37.897mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=724.179mil|Location2.X=725.845mil|Location1.Y=2876.663mil|Location2.Y=2878.33mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=724.179mil|Location2.X=725.845mil|Location1.Y=2876.663mil|Location2.Y=2878.33mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad R8-1(18.542mm,58.039mm) on Top Layer And Text "XCL" (19.367mm,56.452mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=816.681mil|Location2.X=818.348mil|Location1.Y=2846.673mil|Location2.Y=2848.34mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=816.681mil|Location2.X=818.348mil|Location1.Y=2846.673mil|Location2.Y=2848.34mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad R8-2(20.828mm,58.039mm) on Top Layer And Text "ADO" (21.907mm,56.452mm) on Top Overlay [Top Overlay] to [Top Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1044.15mil|Location2.X=1045.817mil|Location1.Y=1684.16mil|Location2.Y=1685.827mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1044.15mil|Location2.X=1045.817mil|Location1.Y=1684.16mil|Location2.Y=1685.827mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad U1-23(27.813mm,27.813mm) on Multi-Layer And Text "C6" (26.543mm,26.797mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1987.152mil|Location2.X=1988.819mil|Location1.Y=1444.197mil|Location2.Y=1445.864mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1987.152mil|Location2.X=1988.819mil|Location1.Y=1444.197mil|Location2.Y=1445.864mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad U2-1(50.8mm,20.701mm) on Multi-Layer And Track (50.495mm,21.972mm)(50.495mm,23.851mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.152mil|Location2.X=2037.819mil|Location1.Y=1445.197mil|Location2.Y=1446.864mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2036.152mil|Location2.X=2037.819mil|Location1.Y=1445.197mil|Location2.Y=1446.864mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad U2-1(50.8mm,20.701mm) on Multi-Layer And Track (51.739mm,21.997mm)(51.74mm,23.876mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2217.152mil|Location2.X=2218.819mil|Location1.Y=1442.197mil|Location2.Y=1443.864mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2217.152mil|Location2.X=2218.819mil|Location1.Y=1442.197mil|Location2.Y=1443.864mil|Absolute=True">Silk To Solder Mask Clearance Constraint: (Collision &lt; 0.025mm) Between Pad U2-3(55.88mm,20.701mm) on Multi-Layer And Track (56.337mm,21.921mm)(56.337mm,23.8mm) on Bottom Overlay [Bottom Overlay] to [Bottom Solder] clearance [0mm]</acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br><a name="IDKLBTHW2U4UUMZFDWLHVRFHQZPKZ01I1IO4YENMUFKDWMF3TJUPI"><table>
+<tr>
+<th style="text-align : left" colspan="1" class="rule">Board Clearance Constraint (Gap=0mm) (All)</th>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=560.875mil|Location2.X=567.125mil|Location1.Y=3361.154mil|Location2.Y=3367.403mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=560.875mil|Location2.X=567.125mil|Location1.Y=3361.154mil|Location2.Y=3367.403mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Arc (14.326mm,66.446mm) on Top Overlay And Board Edge </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=105.357mil|Location2.X=114.481mil|Location1.Y=576.8mil|Location2.Y=585.924mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=105.357mil|Location2.X=114.481mil|Location1.Y=576.8mil|Location2.Y=585.924mil|Absolute=True">Board Outline Clearance(Outline Edge): (0.069mm &lt; 0.2mm) Between Arc (2.792mm,2.033mm) on Top Overlay And Board Edge </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1075.439mil|Location2.X=1084.563mil|Location1.Y=576.751mil|Location2.Y=585.875mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1075.439mil|Location2.X=1084.563mil|Location1.Y=576.751mil|Location2.Y=585.875mil|Absolute=True">Board Outline Clearance(Outline Edge): (0.067mm &lt; 0.2mm) Between Arc (27.432mm,2.127mm) on Top Overlay And Board Edge </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=518.833mil|Location2.X=525.082mil|Location1.Y=3434.866mil|Location2.Y=3441.115mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=518.833mil|Location2.X=525.082mil|Location1.Y=3434.866mil|Location2.Y=3441.115mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "BUZZ1" (9.957mm,71.831mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2319.369mil|Location2.X=2325.618mil|Location1.Y=936.875mil|Location2.Y=943.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2319.369mil|Location2.X=2325.618mil|Location1.Y=936.875mil|Location2.Y=943.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "C1" (58.928mm,9.906mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2326.867mil|Location2.X=2333.117mil|Location1.Y=1081.875mil|Location2.Y=1088.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2326.867mil|Location2.X=2333.117mil|Location1.Y=1081.875mil|Location2.Y=1088.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "C2" (59.309mm,13.589mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2356.868mil|Location2.X=2363.117mil|Location1.Y=1761.875mil|Location2.Y=1768.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2356.868mil|Location2.X=2363.117mil|Location1.Y=1761.875mil|Location2.Y=1768.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "C8" (58.293mm,30.861mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1691.875mil|Location2.X=1698.125mil|Location1.Y=564.391mil|Location2.Y=570.64mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1691.875mil|Location2.X=1698.125mil|Location1.Y=564.391mil|Location2.Y=570.64mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "SET1" (43.815mm,-0.38mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=121.875mil|Location2.X=128.124mil|Location1.Y=567.293mil|Location2.Y=573.543mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=121.875mil|Location2.X=128.124mil|Location1.Y=567.293mil|Location2.Y=573.543mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "U1" (4.191mm,1.291mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=214.859mil|Location2.X=221.108mil|Location1.Y=3388.866mil|Location2.Y=3395.115mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=214.859mil|Location2.X=221.108mil|Location1.Y=3388.866mil|Location2.Y=3395.115mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Text "U4" (4.267mm,70.663mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=430.443mil|Location2.X=439.567mil|Location1.Y=576.753mil|Location2.Y=585.877mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=430.443mil|Location2.X=439.567mil|Location1.Y=576.753mil|Location2.Y=585.877mil|Absolute=True">Board Outline Clearance(Outline Edge): (0.067mm &lt; 0.2mm) Between Board Edge And Track (11.049mm,0.127mm)(11.049mm,6.127mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=745.403mil|Location2.X=754.527mil|Location1.Y=576.753mil|Location2.Y=585.877mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=745.403mil|Location2.X=754.527mil|Location1.Y=576.753mil|Location2.Y=585.877mil|Absolute=True">Board Outline Clearance(Outline Edge): (0.067mm &lt; 0.2mm) Between Board Edge And Track (19.049mm,0.127mm)(19.049mm,6.127mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1075.439mil|Location2.X=1084.563mil|Location1.Y=576.751mil|Location2.Y=585.875mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1075.439mil|Location2.X=1084.563mil|Location1.Y=576.751mil|Location2.Y=585.875mil|Absolute=True">Board Outline Clearance(Outline Edge): (0.067mm &lt; 0.2mm) Between Board Edge And Track (2.822mm,0.129mm)(27.432mm,0.127mm) on Top Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1796.875mil|Location2.X=1803.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1796.875mil|Location2.X=1803.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (45.72mm,-1.473mm)(45.72mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2096.875mil|Location2.X=2103.125mil|Location1.Y=518.875mil|Location2.Y=525.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2096.875mil|Location2.X=2103.125mil|Location1.Y=518.875mil|Location2.Y=525.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (45.72mm,-1.473mm)(60.96mm,-1.473mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2356.54mil|Location2.X=2362.79mil|Location1.Y=1518.875mil|Location2.Y=1525.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2356.54mil|Location2.X=2362.79mil|Location1.Y=1518.875mil|Location2.Y=1525.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (45.72mm,23.927mm)(60.96mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1844.875mil|Location2.X=1851.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1844.875mil|Location2.X=1851.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (46.939mm,-1.473mm)(46.939mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1879.875mil|Location2.X=1886.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1879.875mil|Location2.X=1886.125mil|Location1.Y=545.71mil|Location2.Y=551.96mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (47.828mm,-1.473mm)(47.828mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1943.867mil|Location2.X=1950.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1943.867mil|Location2.X=1950.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (49.453mm,-1.396mm)(49.454mm,0.483mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1976.867mil|Location2.X=1983.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=1976.867mil|Location2.X=1983.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (50.292mm,-1.396mm)(50.292mm,0.483mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2025.867mil|Location2.X=2032.116mil|Location1.Y=547.726mil|Location2.Y=553.975mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2025.867mil|Location2.X=2032.116mil|Location1.Y=547.726mil|Location2.Y=553.975mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (51.536mm,-1.371mm)(51.537mm,0.508mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2058.867mil|Location2.X=2065.116mil|Location1.Y=547.726mil|Location2.Y=553.975mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2058.867mil|Location2.X=2065.116mil|Location1.Y=547.726mil|Location2.Y=553.975mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (52.374mm,-1.371mm)(52.375mm,0.508mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2110.867mil|Location2.X=2117.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2110.867mil|Location2.X=2117.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (53.695mm,-1.396mm)(53.696mm,0.483mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2143.867mil|Location2.X=2150.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2143.867mil|Location2.X=2150.116mil|Location1.Y=547.226mil|Location2.Y=553.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (54.533mm,-1.396mm)(54.534mm,0.483mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2206.867mil|Location2.X=2213.116mil|Location1.Y=546.226mil|Location2.Y=552.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2206.867mil|Location2.X=2213.116mil|Location1.Y=546.226mil|Location2.Y=552.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (56.134mm,-1.447mm)(56.134mm,0.432mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2239.867mil|Location2.X=2246.116mil|Location1.Y=546.226mil|Location2.Y=552.475mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2239.867mil|Location2.X=2246.116mil|Location1.Y=546.226mil|Location2.Y=552.475mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (56.972mm,-1.447mm)(56.972mm,0.432mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2311.875mil|Location2.X=2318.125mil|Location1.Y=1018.875mil|Location2.Y=1025.124mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2311.875mil|Location2.X=2318.125mil|Location1.Y=1018.875mil|Location2.Y=1025.124mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (58.801mm,-1.473mm)(58.801mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_even" onmouseover="className = 'onmouseover_even'" onmouseout="className = 'onmouseout_even'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2344.875mil|Location2.X=2351.125mil|Location1.Y=1018.875mil|Location2.Y=1025.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2344.875mil|Location2.X=2351.125mil|Location1.Y=1018.875mil|Location2.Y=1025.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (59.639mm,-1.473mm)(59.639mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+<tr class="onmouseout_odd" onmouseover="className = 'onmouseover_odd'" onmouseout="className = 'onmouseout_odd'">
+<td class="column1"><a href="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2396.875mil|Location2.X=2403.125mil|Location1.Y=1018.875mil|Location2.Y=1025.125mil|Absolute=True" class="callback"><acronym title="dxpprocess://PCB:Zoom?document=C:\Users\phihv\Desktop\GPS_Tracker\GPS_Tracker\GPS_Tracker\PCB1.PcbDoc;viewname=PCBEditor;Action=AREA_DYNAMICZOOM|Location1.X=2396.875mil|Location2.X=2403.125mil|Location1.Y=1018.875mil|Location2.Y=1025.125mil|Absolute=True">Board Outline Clearance(Outline Edge): (Collision &lt; 0.2mm) Between Board Edge And Track (60.96mm,-1.473mm)(60.96mm,23.927mm) on Bottom Overlay </acronym></a><br></td>
+</tr>
+</table></a><hr color="#EEEEEE"><a href="#top" style="font-size: 0.9em">Back to top</a><br><br></body>
+</html>

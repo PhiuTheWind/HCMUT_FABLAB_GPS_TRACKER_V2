@@ -1,0 +1,42 @@
+Removed Pin From Net: NetName=3V3 Pin=U1-1
+Removed Pin From Net: NetName=GND Pin=U1-2
+Removed Pin From Net: NetName=NetP1_8 Pin=U1-4
+Removed Pin From Net: NetName=NetJ1_5 Pin=U1-5
+Removed Pin From Net: NetName=NetJ1_3 Pin=U1-6
+Removed Pin From Net: NetName=NetJ1_4 Pin=U1-7
+Removed Pin From Net: NetName=buzzer Pin=U1-9
+Removed Pin From Net: NetName=NetP1_4 Pin=U1-11
+Removed Pin From Net: NetName=NetH2_3 Pin=U1-12
+Removed Pin From Net: NetName=NetH2_4 Pin=U1-13
+Removed Pin From Net: NetName=NetP1_3 Pin=U1-14
+Removed Pin From Net: NetName=NetC9_1 Pin=U1-19
+Removed Pin From Net: NetName=NetC10_2 Pin=U1-20
+Removed Pin From Net: NetName=NetH2_5 Pin=U1-21
+Removed Pin From Net: NetName=NetH2_7 Pin=U1-22
+Removed Pin From Net: NetName=NetJ1_6 Pin=U1-25
+Removed Pin From Net: NetName=NetR6_2 Pin=U1-27
+Removed Pin From Net: NetName=NetQ2_1 Pin=U1-28
+Change Component Footprint: Designator=U1 Old Footprint=MODULE_ESP32_DEVKIT_V1 New Footprint=ESP32_30
+Change Component Comment : Designator=U1 Old Comment=ESP32-DEVKIT-V1 New Comment=ESP32_30
+Change component parameters: Designator = "U1" ("U1"); Footprint = "MODULE_ESP32_DEVKIT_V1"; UniqueID = "\OGOBBWLG" ("\OGOBBWLG")
+Change component parameters (AddParameter): Name = "ComponentLink1Description"; Value = "Datasheet"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "ComponentLink1URL"; Value = "https://www.mouser.com/datasheet/2/891/esp32_wroom_32d_esp32_wroom_32u_datasheet_en-1365844.pdf"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetC9_1 Pin=U1-4
+Added Pin To Net: NetName=NetC10_2 Pin=U1-5
+Added Pin To Net: NetName=NetH2_5 Pin=U1-6
+Added Pin To Net: NetName=NetH2_7 Pin=U1-7
+Added Pin To Net: NetName=NetJ1_6 Pin=U1-10
+Added Pin To Net: NetName=NetR6_2 Pin=U1-12
+Added Pin To Net: NetName=NetQ2_1 Pin=U1-13
+Added Pin To Net: NetName=NetP1_3 Pin=U1-17
+Added Pin To Net: NetName=NetH2_4 Pin=U1-18
+Added Pin To Net: NetName=NetH2_3 Pin=U1-19
+Added Pin To Net: NetName=NetP1_4 Pin=U1-20
+Added Pin To Net: NetName=buzzer Pin=U1-22
+Added Pin To Net: NetName=NetJ1_4 Pin=U1-24
+Added Pin To Net: NetName=NetJ1_3 Pin=U1-25
+Added Pin To Net: NetName=NetJ1_5 Pin=U1-26
+Added Pin To Net: NetName=NetP1_8 Pin=U1-27
+Added Pin To Net: NetName=3V3 Pin=U1-30
+Added Member To Class: ClassName=Sheet1 Member=Component R6 10k
+Added Room: Name=Sheet1

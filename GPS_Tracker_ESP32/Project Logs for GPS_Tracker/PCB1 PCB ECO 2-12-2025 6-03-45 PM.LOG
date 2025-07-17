@@ -1,0 +1,36 @@
+Removed Pin From Net: NetName=5V Pin=L1-2
+Removed Pin From Net: NetName=5V Pin=U3-4
+Added Component: Designator=BUZZ1(BUZ_9MM)
+Add component (AddParameter): Name = "PartNumber"; Value = "CST-951AP"; VariantName = "[No Variations]"
+Added Component: Designator=Q3(SOT23-321)
+Add component (AddParameter): Name = "Value"; Value = "C1815"; VariantName = "[No Variations]"
+Added Component: Designator=R6(RES-SMD-0805)
+Add component (AddParameter): Name = "Class"; Value = "Passive"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Generic Components"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "08/06/2000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Hobart Technology Centre"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=BUZZ1-1
+Added Pin To Net: NetName=GND Pin=Q3-1
+Added Pin To Net: NetName=buzzer Pin=R6-2
+Added Pin To Net: NetName=buzzer Pin=U1-9
+Added Net: Name=buzzer
+Added Pin To Net: NetName=NetBUZZ1_2 Pin=BUZZ1-2
+Added Pin To Net: NetName=NetBUZZ1_2 Pin=Q3-2
+Added Net: Name=NetBUZZ1_2
+Added Pin To Net: NetName=NetL1_2 Pin=L1-2
+Added Pin To Net: NetName=NetL1_2 Pin=U3-4
+Added Net: Name=NetL1_2
+Added Pin To Net: NetName=NetQ3_3 Pin=Q3-3
+Added Pin To Net: NetName=NetQ3_3 Pin=R6-1
+Added Net: Name=NetQ3_3
+Added Member To Class: ClassName=Sheet1 Member=Component BUZZ1 BZ 5V
+Added Member To Class: ClassName=Sheet1 Member=Component C7 10uF
+Added Member To Class: ClassName=Sheet1 Member=Component C10 100nF
+Added Member To Class: ClassName=Sheet1 Member=Component C11 OPT
+Added Member To Class: ClassName=Sheet1 Member=Component C13 OPT
+Added Member To Class: ClassName=Sheet1 Member=Component C15 100uF
+Added Member To Class: ClassName=Sheet1 Member=Component C18 10uF
+Added Member To Class: ClassName=Sheet1 Member=Component Q3 2SC1815
+Added Member To Class: ClassName=Sheet1 Member=Component R5 10K
+Added Member To Class: ClassName=Sheet1 Member=Component R6 330
+Added Room: Name=Sheet1

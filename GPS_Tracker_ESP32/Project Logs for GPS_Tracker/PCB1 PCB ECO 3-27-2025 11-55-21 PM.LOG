@@ -1,0 +1,22 @@
+Removed Pin From Net: NetName=NetC10_2 Pin=R2-1
+Removed Pin From Net: NetName=5V Pin=U4-1
+Change Component Comment : Designator=R2 Old Comment=8.2K New Comment=500 ohm
+Change Component Comment : Designator=R3 Old Comment=33K New Comment=10k
+Change Component Designator: OldDesignator=R3 NewDesignator=R5
+Change Component Designator: OldDesignator=R5 NewDesignator=R6
+Change Component Designator: OldDesignator=R6 NewDesignator=R7
+Change Component Designator: OldDesignator=R7 NewDesignator=R8
+Change Component Description : Designator=J1 Old Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF New Description=MX 1.25mm 8 pin;Conn; Rect; Header; 1.25 mm Pitch; PCB; 8 Cir; Ver; SMT; PicoBlade; LF | Molex Incorporated 53398-0871
+Added Component: Designator=R3(RES-SMD-0805)
+Add component (AddParameter): Name = "Class"; Value = "Passive"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Generic Components"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Published"; Value = "08/06/2000"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Publisher"; Value = "Altium Hobart Technology Centre"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=NetC10_2 Pin=R3-2
+Added Pin To Net: NetName=3V3 Pin=U4-1
+Change Net Name : Old Net Name=NetR6_2 New Net Name=NetR7_2
+Added Pin To Net: NetName=NetR2_1 Pin=R2-1
+Added Pin To Net: NetName=NetR2_1 Pin=R3-1
+Added Net: Name=NetR2_1
+Added Member To Class: ClassName=Sheet1 Member=Component R8 330
+Added Room: Name=Sheet1

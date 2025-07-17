@@ -1,0 +1,18 @@
+Removed Pin From Net: NetName=GND Pin=P1-2
+Removed Member From Class: ClassName=Sheet1 Member=P1
+Added Component: Designator=U4(MPU6050)
+Add component (AddParameter): Name = "ComponentLink1Description"; Value = "Datasheet"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "ComponentLink1URL"; Value = "https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=5V Pin=U4-1
+Added Pin To Net: NetName=GND Pin=U4-2
+Added Pin To Net: NetName=NetU1_17 Pin=U1-17
+Added Pin To Net: NetName=NetU1_17 Pin=U4-3
+Added Net: Name=NetU1_17
+Added Pin To Net: NetName=NetU1_20 Pin=U1-20
+Added Pin To Net: NetName=NetU1_20 Pin=U4-4
+Added Net: Name=NetU1_20
+Added Pin To Net: NetName=NetU1_27 Pin=U1-27
+Added Pin To Net: NetName=NetU1_27 Pin=U4-8
+Added Net: Name=NetU1_27
+Added Member To Class: ClassName=Sheet1 Member=Component U4 MPU6050
+Added Room: Name=Sheet1
